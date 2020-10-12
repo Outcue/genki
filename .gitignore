@@ -1,0 +1,7 @@
+.cache
+.vscode
+dist
+genki.code-workspace
+node_modules
+yarn.lock
+yarn-error.log

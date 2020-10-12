@@ -1,0 +1,26 @@
+{
+    "name": "genki-ts",
+    "version": "1.0.0",
+    "main": "index.js",
+    "license": "MIT",
+    "devDependencies": {
+        "@types/chai": "^4.2.12",
+        "@types/mocha": "^8.0.0",
+        "chai": "^4.2.0",
+        "mocha": "^8.0.1",
+        "ts-node": "^8.10.2",
+        "typescript": "^3.9.7"
+    },
+    "dependencies": {
+        "@svgdotjs/svg.filter.js": "^3.0.7",
+        "@svgdotjs/svg.js": "^3.0.16",
+        "@types/svg.js": "^2.3.1",
+        "@types/yoga-layout": "^1.9.3",
+        "mobx": "^5.15.6",
+        "svgjs": "^2.6.2",
+        "yoga-layout-prebuilt": "^1.9.3"
+    },
+    "scripts": {
+        "tests": "mocha --require ts-node/register test/**/*.ts"
+    }
+}
