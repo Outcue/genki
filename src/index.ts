@@ -16,31 +16,21 @@ import { SVG } from '@svgdotjs/svg.js'
 
 import { Router } from './Router'
 
-import { State, StateArray, StateChange } from './Bindings/State'
+import { State } from './Bindings/State'
 
 import { Color } from './Types/Color'
 import { Font } from './Types/Font'
 import { Identifiable } from './Types/Identifiable'
 
-import { SidebarListStyle } from './Styles/ListStyle'
 
 import { HStack, VStack, ZStack } from './Views/Layout/Stack'
-import { Layout, RootLayout } from './Views/Layout/Layout'
+import { RootLayout } from './Views/Layout/Layout'
 
 import { AnyView, View, ViewBuilder } from './Views/View'
-import { Button } from './Views/Buttons/Button'
-import { ForEach } from './Views/Containers/ForEach'
-import { Image } from './Views/Image'
-import { List, ListView } from './Views/Containers/List'
 import { NavigationLink, NavigationView } from './Views/Navigation/Navigation'
-import { Picker } from './Views/Selectors/Picker'
-import { ScrollView } from './Views/Containers/ScrollView'
-import { Slider } from './Views/Selectors/Slider'
 import { Spacer } from './Views/Spacers/Spacer'
 import { Text, TextField, SecureTextField, TextView } from './Views/Text/Text'
-import { Toggle } from './Views/Selectors/Toggle'
 
-import { Circle } from './Shapes/Circle'
 import { Rectangle } from './Shapes/Rectangle'
 
 
@@ -356,30 +346,6 @@ class TextString extends Identifiable {
 //}
 
 
-// function scrollBody(): AnyView {
-
-
-//     const items = [
-//         new TextString('1'),
-//         new TextString('2'),
-//         new TextString('3'),
-//         new TextString('4'),
-//         new TextString('5')
-//     ]
-//     var values = StateArray<TextString>(items)
-
-//     return ScrollView(
-//         VStack(
-//             ForEach(values, (value: TextString) => {
-//                 return Text(value.text)
-//                     .onTapGesture(1, () => {
-//                     })
-//             })
-
-//         ).frame({ width: 300, height: 300 })
-
-//     )
-// }
 
 function sidebarBody(): AnyView {
 

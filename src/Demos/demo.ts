@@ -29,6 +29,7 @@ import ImageDemo from './ImageDemo'
 import GradientsDemo from './GradientsDemo'
 import PathsDemo from './PathsDemo'
 import PickersDemo from './PickersDemo'
+import ScrollviewDemo from './ScrollviewDemo'
 import SliderDemo from './SliderDemo'
 import ShapesDemo from './ShapesDemo'
 import TextDemo from './TextDemo'
@@ -77,6 +78,7 @@ class Demo implements ViewBuilder {
                 SidebarItem("Gradients", GradientsDemo()),
                 SidebarItem("Paths", PathsDemo()),
                 SidebarItem("Pickers", PickersDemo()),
+                SidebarItem("Scrollview", ScrollviewDemo()),
                 SidebarItem("Shapes", ShapesDemo()),
                 SidebarItem("Sliders", SliderDemo()),
                 SidebarItem("Text", TextDemo()),
