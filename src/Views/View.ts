@@ -230,9 +230,10 @@ export abstract class AnyView extends Identifiable {
         var topLeft = Point(computed.left, computed.top)
 
         const position = Point(
-            Math.max(0, topLeft.x + origin.x),
-            Math.max(0, topLeft.y + origin.y)
+            topLeft.x + origin.x,
+            topLeft.y + origin.y
         )
+
         this.setPosition(position)
 
         if (useComputed) {
