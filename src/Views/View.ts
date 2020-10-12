@@ -36,7 +36,7 @@ import { Animation } from "../Modifiers/Animations"
 import { Layout, RootLayout } from '../Views/Layout/Layout'
 
 type VoidViewAction = (view: AnyView) => void
-type BoolViewAction = (value: boolean, view: AnyView) => void
+export type BoolViewAction = (value: boolean, view: AnyView) => void
 
 // A view that can be added to a layout
 export abstract class AnyView extends Identifiable {

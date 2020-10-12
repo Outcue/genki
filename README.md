@@ -61,11 +61,11 @@ export default function ButtonDemo(): ViewBuilder {
 
 ### Getting Started
 
-'''
+```
 git clone https://github.com/Outcue/genki
 cd genki
 yarn install
 parcel src/Demos/demo.html
-'''
+```
 
 Open http://127.0.0.1:1234/ in your browser to see the demo application.

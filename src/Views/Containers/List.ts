@@ -17,7 +17,7 @@ export class ListView extends View<ListView> {
     private _style = PlainListStyle()
 
     private _foreignObject: ForeignObject
-    private _scroller: Element
+    private _scroller: HTMLDivElement
     private _group: Svg
 
     constructor() {
@@ -28,23 +28,23 @@ export class ListView extends View<ListView> {
 
         // Create the div container
         this._foreignObject = this.element as ForeignObject
-        this._scroller = SVG(
-            '<div style="overflow: auto;"/>'
-        )
-        this._scroller.data('view', 'Scroll')
+        this._foreignObject.data('view', 'Scroll Container')
+
+        this._scroller = document.createElement('div')
+        this._scroller.style.overflow = 'auto'
         this._foreignObject.add(this._scroller)
 
         this._group = View.Context.nested()
         this._group.add(this.listLayout.group)
         this._group.data('view', 'Group')
-        this._scroller.add(this._group)
+        //this._scroller.add(this._group)
 
         // List items are always aligned to the top
         this.listLayout.layout.setJustifyContent(Yoga.JUSTIFY_FLEX_START)
 
         // Elements are items whose dimensions mirror the dimensions
         // of the main element. They are not part of the child hierarchy.
-        this.addElement(this._scroller)
+        //this.addElement(this._scroller)
     }
 
     public addChild(child: AnyView) {

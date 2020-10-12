@@ -16,8 +16,7 @@ import { G } from '@svgdotjs/svg.js'
 import Yoga from 'yoga-layout';
 
 import { AnyView, View } from '../View'
-
-import { ViewAction } from '../../Types/Actions';
+import { BoolViewAction } from '../View'
 
 export class Layout extends View<Layout> {
 
@@ -80,7 +79,7 @@ export class Layout extends View<Layout> {
 
     // Overidden from view. The mouse events muse be 
     // handled by the group containing all children
-    onHover(action: ViewAction): Layout {
+    onHover(action: BoolViewAction): Layout {
 
         this.group.mouseover(() => {
             action(true, this)
