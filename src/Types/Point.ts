@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import { Angle } from './Angle'
+
 export interface PointData {
     x?: any
     y?: any
@@ -27,7 +29,7 @@ export interface Point {
     readonly y: number
 }
 
-class PointImpl implements Point {
+class _Point implements Point {
 
     readonly x: number
     readonly y: number
@@ -36,13 +38,25 @@ class PointImpl implements Point {
         this.x = x ?? 0.0
         this.y = y ?? 0.0
     }
+
+    rotate(angle: Angle, around: Point): Point {
+        const cosAngle = Math.cos(angle.radians)
+        const sinAngle = Math.sin(angle.radians)
+        return Point(
+            cosAngle * (this.x - around.x)
+            - sinAngle * (this.y - around.y) + around.x,
+
+            sinAngle * (this.x - around.x)
+            + cosAngle * (this.y - around.y) + around.y
+        )
+    }
 }
 
 export function Point(x: number = 0.0, y: number = 0.0) {
-    return new PointImpl({ x: x, y: y })
+    return new _Point({ x: x, y: y })
 }
 
-export class Extent extends PointImpl {
+export class Extent extends _Point {
 
     constructor(inPoint: Point) {
         super({ x: inPoint.x, y: inPoint.y })

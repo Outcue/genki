@@ -12,6 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-export * from "./Layout"
-export * from "./Stack"
-export * from "./GeometryReader"
+export interface Size {
+    readonly width: number
+    readonly height: number
+}
+
+class _Size implements Size {
+    constructor(
+        readonly width: number,
+        readonly height: number) {
+    }
+}
+
+export function Size(width: number, height: number) {
+    return new _Size(width, height)
+}
+

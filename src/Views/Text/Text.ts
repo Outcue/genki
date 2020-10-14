@@ -1,7 +1,7 @@
 
 import "@svgdotjs/svg.filter.js"
 
-import { ForeignObject, Svg, SVG, Rect as RectSvg, Text as TextSvg } from '@svgdotjs/svg.js'
+import { Filter, ForeignObject, Svg, SVG, Rect as RectSvg, Text as TextSvg } from '@svgdotjs/svg.js'
 
 import { isState, State, StateChange, StateValue } from '../../Bindings/State';
 
@@ -85,7 +85,7 @@ export class TextView extends View<TextView> {
     }
 
     protected setBackgroundColor(color: Color) {
-        this.element.filterWith(function (add) {
+        this.element.filterWith((add: Filter) => {
             const flood = add.flood(color.toString(), color.a)
             add.composite(add.$source, flood, null)
         })

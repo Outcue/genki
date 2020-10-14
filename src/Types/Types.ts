@@ -15,6 +15,7 @@
 import { Color } from './Color';
 
 export * from './Actions'
+export * from './Angle'
 export * from './Color'
 export * from './Font'
 export * from './Gradient'

@@ -14,7 +14,7 @@
 
 import { Path as PathSvg } from '@svgdotjs/svg.js'
 
-import { Point } from '../Types/Types';
+import { Angle, Point } from '../Types/Types';
 import { Shape } from '../Shapes/Shape'
 import { View } from '../Views/View';
 
@@ -56,6 +56,7 @@ type PathAction = (path: PathImpl) => void
 
 export interface Path {
     move(p: Point): PathImpl
+    addArc(center: Point, radius: number, startAngle: Angle, endAngle: Angle, clockwise: boolean): PathImpl
     addLine(p: Point): PathImpl
     addQuadCurve(p: Point, control: Point): PathImpl
     addCurve(p: Point, cp1: Point, cp2: Point): void
@@ -65,7 +66,6 @@ export interface Path {
 class PathImpl extends Shape implements Path {
 
     private _commands = new Array<PathCommand>()
-    private _subpaths = new Array<PathImpl>()
 
     protected readonly _path: PathSvg
 
@@ -108,65 +108,65 @@ class PathImpl extends Shape implements Path {
     // // There's a great article on bezier curves here:
     // // https://pomax.github.io/bezierinfo
     // // FIXME: Handle negative delta
-    // public addArc(
-    //     center: Point,
-    //     radius: number,
-    //     startAngle: number,
-    //     endAngle: number,
-    //     clockwise: boolean) {
+    public addArc(
+        center: Point,
+        radius: number,
+        startAngle: Angle,
+        endAngle: Angle,
+        clockwise: boolean) {
 
-    //     if (clockwise) {
-    //         this.addArc(
-    //             center,
-    //             radius,
-    //             endAngle,
-    //             endAngle + (degrees_to_radians(Math.PI * 2) - endAngle) + startAngle,
-    //             false
-    //         )
-    //     } else {
-    //         let angle = Math.abs(startAngle - endAngle.radians)
-    //         if angle > .pi / 2 {
-    //             // Split the angle into 90º chunks
-    //             let chunk1 = Angle.radians(startAngle.radians + (.pi / 2))
-    //             addArc(
-    //                 center: center,
-    //                 radius: radius,
-    //                 startAngle: startAngle,
-    //                 endAngle: chunk1,
-    //                 clockwise: clockwise
-    //             )
-    //             addArc(
-    //                 center: center,
-    //                 radius: radius,
-    //                 startAngle: chunk1,
-    //                 endAngle: endAngle,
-    //                 clockwise: clockwise
-    //             )
-    //         } else {
-    //             let startPoint = Point(
-    //                 x: radius + center.x,
-    //                 y: center.y
-    //             )
-    //             let endPoint = Point(
-    //                 x: (radius * cos(angle)) + center.x,
-    //                 y: (radius * sin(angle)) + center.y
-    //             )
-    //             let l = (4 / 3) * tan(angle / 4)
-    //             let c1 = Point(x: radius + center.x, y: (l * radius) + center.y)
-    //             let c2 = Point(
-    //                 x: ((cos(angle) + l * sin(angle)) * radius) + center.x,
-    //                 y: ((sin(angle) - l * cos(angle)) * radius) + center.y
-    //             )
+        if (clockwise) {
 
-    //             move(to: startPoint.rotate(startAngle, around: center))
-    //             addCurve(
-    //                 to: endPoint.rotate(startAngle, around: center),
-    //                 control1: c1.rotate(startAngle, around: center),
-    //                 control2: c2.rotate(startAngle, around: center)
-    //             )
-    //         }
-    //     }
-    // }
+            const radians =
+                endAngle.degrees
+                + (degrees_to_radians(Math.PI * 2) - endAngle.degrees)
+                + startAngle.degrees
+
+            this.addArc(
+                center,
+                radius,
+                endAngle,
+                Angle({ radians: radians }),
+                false
+            )
+        } else {
+            let angle = Math.abs(startAngle.radians - endAngle.radians)
+            if (angle > Math.PI / 2) {
+                // Split the angle into 90° chunks
+                let chunk1 = Angle({ radians: startAngle.radians + (Math.PI / 2) })
+                this.addArc(
+                    center,
+                    radius,
+                    startAngle,
+                    chunk1,
+                    clockwise)
+                this.addArc(
+                    center,
+                    radius,
+                    chunk1,
+                    endAngle,
+                    clockwise)
+            } else {
+                let startPoint = Point(radius + center.x, center.y)
+                let endPoint = Point(
+                    (radius * Math.cos(angle)) + center.x,
+                    (radius * Math.sin(angle)) + center.y)
+                let l = (4 / 3) * Math.tan(angle / 4)
+                let c1 = Point(radius + center.x, (l * radius) + center.y)
+                let c2 = Point(
+                    ((Math.cos(angle) + l * Math.sin(angle)) * radius) + center.x,
+                    ((Math.sin(angle) - l * Math.cos(angle)) * radius) + center.y)
+
+                this.move(startPoint.rotate(startAngle, center))
+                this.addCurve(
+                    endPoint.rotate(startAngle, center),
+                    c1.rotate(startAngle, center),
+                    c2.rotate(startAngle, center)
+                )
+            }
+        }
+        return this
+    }
 
     private updatePath() {
 

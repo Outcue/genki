@@ -42,7 +42,6 @@ export class Shape extends View<Shape> {
     public fill(color: any): Shape {
 
         if (isState(color)) {
-            console.log(color)
             color.observe((color: Color) => {
                 this.setBackgroundColor(color)
             })

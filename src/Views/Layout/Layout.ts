@@ -55,6 +55,21 @@ export class Layout extends View<Layout> {
         this.applySpacing()
     }
 
+    // public removeChild(child: AnyView) {
+    //     super.removeChild(child)
+
+    //     if (child.element) {
+    //         this.group.removeElement(child.element)
+    //     }
+
+    //     if (child instanceof Layout) {
+    //         this.group.removeElement(child.group)
+    //     }
+
+    //     // TODO: Just apply spacing to the inserted item
+    //     this.applySpacing()
+    // }
+
     spacing(amount: number): Layout {
 
         if (amount == this._spacing) {

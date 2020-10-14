@@ -14,13 +14,19 @@
 
 import "@svgdotjs/svg.filter.js"
 
-import { Dom, Element, Rect as RectSvg, Svg } from '@svgdotjs/svg.js'
+import { Dom, Element, Filter, Rect as RectSvg, Svg } from '@svgdotjs/svg.js'
 import Yoga, { Node } from 'yoga-layout'
 
-import { isState, StateChange, StateValue } from '../Bindings/State'
+import {
+    isState,
+    State,
+    StateChange,
+    StateValue
+} from '../Bindings/State'
 
 import { VoidAction } from '../Types/Actions'
 import { Color } from '../Types/Color'
+
 import {
     Edge,
     EdgeInsets,
@@ -28,11 +34,10 @@ import {
     ScaleData,
     ShadowData, ShadowDataDefaults
 } from '../Types/Types'
+
 import { Identifiable } from "../Types/Identifiable"
 import { Point, PointData, PointDataDefaults } from '../Types/Point'
-
 import { Animation } from "../Modifiers/Animations"
-
 import { Layout, RootLayout } from '../Views/Layout/Layout'
 
 type VoidViewAction = (view: AnyView) => void
@@ -49,6 +54,11 @@ export abstract class AnyView extends Identifiable {
     protected _disabled = false
     protected _animate = false
 
+    protected _x = State<number>(0.0)
+    protected _y = State<number>(0.0)
+    protected _width = State<number>(0.0)
+    protected _height = State<number>(0.0)
+
     protected appearAction: VoidAction
     protected disappearAction: VoidAction
 
@@ -56,6 +66,8 @@ export abstract class AnyView extends Identifiable {
 
     private _animation = Animation.basic
     private _animations = new Map<Element, {}>()
+
+    protected _shadowFilter: Filter
 
     private _parent: AnyView
 
@@ -94,7 +106,7 @@ export abstract class AnyView extends Identifiable {
 
         for (var child of children) {
             if (child.isGroup()) {
-                child.addedToParent(this)
+                child.addedToParentInternal(this)
                 this.addChildren(child.children)
             } else {
                 this.addChild(child)
@@ -111,7 +123,7 @@ export abstract class AnyView extends Identifiable {
         const count = this.layout.getChildCount()
         this.layout.insertChild(child.layout, count)
         this.children.push(child)
-        child.addedToParent(this)
+        child.addedToParentInternal(this)
     }
 
     public removeChild(child: AnyView) {
@@ -122,16 +134,29 @@ export abstract class AnyView extends Identifiable {
         this.layout.removeChild(child.layout)
         const index = this.children.indexOf(child, 0)
         this.children.splice(index, 1)
+        child.remove()
         child.removedFromParent()
     }
 
-    public addedToParent(parent: AnyView) {
+    private addedToParentInternal(parent: AnyView) {
         this._parent = parent
+        this.addedToParent()
+    }
+
+    public addedToParent() {
     }
 
     public removedFromParent() {
+    }
+
+    public remove() {
+
+        if (this._shadowFilter) {
+            this._shadowFilter.remove()
+        }
 
         if (this.element) {
+            this.element.unfilter()
             this.element.remove()
         }
 
@@ -156,6 +181,8 @@ export abstract class AnyView extends Identifiable {
         this.removeAll()
         if (this._parent) {
             this._parent.removeChild(this)
+        } else {
+            this.remove()
         }
     }
 
@@ -166,12 +193,28 @@ export abstract class AnyView extends Identifiable {
         }
     }
 
-    public getWidth() {
-        return this.element ? this.element.width() : 0.0
+    public observeX(callback: (change: StateChange<number>) => void) {
+        this._x.observe(callback)
     }
 
-    public getHeight() {
-        return this.element ? this.element.height() : 0.0
+    public observeY(callback: (change: StateChange<number>) => void) {
+        this._y.observe(callback)
+    }
+
+    public observeWidth(callback: (change: StateChange<number>) => void) {
+        this._width.observe(callback)
+    }
+
+    public observeHeight(callback: (change: StateChange<number>) => void) {
+        this._height.observe(callback)
+    }
+
+    public getWidth(): number {
+        return this._width.get()
+    }
+
+    public getHeight(): number {
+        return this._height.get()
     }
 
     // MARK: Animation
@@ -283,8 +326,13 @@ export abstract class ProxyView extends AnyView {
     padding(type?: Set<Edge.Type>, amount?: number): void { }
     setPosition({ x, y }: PointData): void { }
 
+    setX(_: number) { }
+    getX() { return this._x }
+    setY(_: number) { }
+
     setWidth(_: number) { }
     setHeight(_: number) { }
+
     setDisabled(_: boolean) { }
     setHidden(_: boolean) { }
 }
@@ -740,6 +788,9 @@ export class View<T> extends AnyView {
             element.node.setAttribute("width", width.toString())
             element.node.style.width = width.toString()
         }
+
+        this._width.set(width)
+
         // TODO: Invalidate layout
     }
 
@@ -754,16 +805,21 @@ export class View<T> extends AnyView {
             element.node.setAttribute("height", height.toString())
             element.node.style.height = height.toString()
         }
+
+        this._height.set(height)
+
         // TODO: Invalidate layout
     }
 
     protected setX(x: number) {
         this.element.x(x)
+        this._x.set(x)
         // Invalidate layout
     }
 
     protected setY(y: number) {
         this.element.y(y)
+        this._y.set(y)
         // TODO: Invalidate layout
     }
 
@@ -778,13 +834,13 @@ export class View<T> extends AnyView {
             this.element.attr('opacity', 1.0)
         }
 
-        this.element.filterWith(function (add) {
-            const blur = add
-                .flood(color.toString(), color.a)
+        this.element.filterWith((add: Filter) => {
+            const effect = add.flood(color.toString(), color.a)
                 .composite(add.$source, 'in')
                 .gaussianBlur(radius, radius)
                 .offset(x, y)
-            add.blend(add.$source, blur, null)
+            add.blend(add.$source, effect, null)
+            this._shadowFilter = add
         })
     }
 

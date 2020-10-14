@@ -23,7 +23,7 @@ export interface Color {
     readonly a: number
 }
 
-class _ColorImpl implements Color {
+class _Color implements Color {
 
     constructor(
         readonly r: number,
@@ -55,7 +55,7 @@ export function Color(
     green: number,
     blue: number,
     alpha: number = 1.0): Color {
-    return new _ColorImpl(red, green, blue, alpha)
+    return new _Color(red, green, blue, alpha)
 }
 
 // https://en.wikipedia.org/wiki/HSL_and_HSV#HSL_to_RGB_alternative
