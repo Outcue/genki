@@ -106,7 +106,7 @@ export abstract class AnyView extends Identifiable {
 
         for (var child of children) {
             if (child.isGroup()) {
-                child.addedToParentInternal(this)
+                child.addedInternal(this)
                 this.addChildren(child.children)
             } else {
                 this.addChild(child)
@@ -117,13 +117,14 @@ export abstract class AnyView extends Identifiable {
     public addChild(child: AnyView) {
 
         if (this.children.includes(child)) {
-            throw new Error("Child already added to layout")
+            console.error(child)
+            throw new Error("Child already added to layout: ")
         }
 
         const count = this.layout.getChildCount()
         this.layout.insertChild(child.layout, count)
         this.children.push(child)
-        child.addedToParentInternal(this)
+        child.addedInternal(this)
     }
 
     public removeChild(child: AnyView) {
@@ -134,22 +135,34 @@ export abstract class AnyView extends Identifiable {
         this.layout.removeChild(child.layout)
         const index = this.children.indexOf(child, 0)
         this.children.splice(index, 1)
-        child.remove()
-        child.removedFromParent()
     }
 
-    private addedToParentInternal(parent: AnyView) {
+    private addedInternal(parent: AnyView) {
         this._parent = parent
-        this.addedToParent()
+        this.added()
     }
 
-    public addedToParent() {
+    public added() {
     }
 
-    public removedFromParent() {
+    public removed() {
+    }
+
+    public removeSelf() {
+
+        for (const child of this.children) {
+            child.removeSelf()
+            this.layout.removeChild(child.layout)
+        }
+
+        this.remove()
     }
 
     public remove() {
+
+        if (this._parent) {
+            this._parent.layout.removeChild(this.layout)
+        }
 
         if (this._shadowFilter) {
             this._shadowFilter.remove()
@@ -163,6 +176,8 @@ export abstract class AnyView extends Identifiable {
         for (var element of this._elements) {
             element.remove()
         }
+
+        this.removed()
     }
 
     public getParent(): AnyView {
@@ -175,22 +190,6 @@ export abstract class AnyView extends Identifiable {
     // of the main element. They are not part of the child hierarchy.
     protected addElement(element: Dom) {
         this._elements.push(element)
-    }
-
-    public removeSelf() {
-        this.removeAll()
-        if (this._parent) {
-            this._parent.removeChild(this)
-        } else {
-            this.remove()
-        }
-    }
-
-    public removeAll() {
-        for (const child of this.children) {
-            child.removeAll()
-            child.removeSelf()
-        }
     }
 
     public observeX(callback: (change: StateChange<number>) => void) {

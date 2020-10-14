@@ -39,7 +39,7 @@ export class GeometryReaderView extends Layout {
         this.group.data('layout', 'GeometryReader')
     }
 
-    public addedToParent() {
+    public added() {
 
         const parent = this.getParent()
         this.frame({ width: parent.getWidth(), height: parent.getHeight() })

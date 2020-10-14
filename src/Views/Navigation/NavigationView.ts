@@ -45,7 +45,10 @@ export class NavigationViewLayout extends HStackLayout {
 
         this._hostedView.removeSelf()
         this._spacer.removeSelf()
+        this.children.length = 0
+
         this._hostedView = destination
+
         this.addChild(this._hostedView)
         this.addChild(this._spacer)
 
