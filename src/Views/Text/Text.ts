@@ -27,6 +27,8 @@ export class TextView extends View<TextView> {
     private _linethrough = false
     private _color = Color.black
 
+    protected _floodFilter: Filter
+
     constructor(text: StateValue<string>)
     constructor(text: string)
     constructor(text: any) {
@@ -75,6 +77,12 @@ export class TextView extends View<TextView> {
         this.measureAndUpdate()
     }
 
+    public removed() {
+        if (this._floodFilter) {
+            this._floodFilter.remove()
+        }
+    }
+
     public rotate(degrees: number): TextView {
         this._text.rotate(degrees)
         return this
@@ -85,9 +93,15 @@ export class TextView extends View<TextView> {
     }
 
     protected setBackgroundColor(color: Color) {
+
+        if (this._floodFilter) {
+            this._floodFilter.remove()
+        }
+
         this.element.filterWith((add: Filter) => {
             const flood = add.flood(color.toString(), color.a)
             add.composite(add.$source, flood, null)
+            this._floodFilter = add
         })
     }
 
