@@ -26,9 +26,11 @@ import { Text } from '../Genki'
 
 import ButtonDemo from './ButtonDemo'
 import ImageDemo from './ImageDemo'
+import GeometryDemo from './GeometryDemo'
 import GradientsDemo from './GradientsDemo'
 import PathsDemo from './PathsDemo'
 import PickersDemo from './PickersDemo'
+import ScrollviewDemo from './ScrollviewDemo'
 import SliderDemo from './SliderDemo'
 import ShapesDemo from './ShapesDemo'
 import TextDemo from './TextDemo'
@@ -74,9 +76,11 @@ class Demo implements ViewBuilder {
             VStack(
                 SidebarItem("Buttons", ButtonDemo()),
                 SidebarItem("Images", ImageDemo()),
+                SidebarItem("Geometry", GeometryDemo()),
                 SidebarItem("Gradients", GradientsDemo()),
                 SidebarItem("Paths", PathsDemo()),
                 SidebarItem("Pickers", PickersDemo()),
+                SidebarItem("Scrollview", ScrollviewDemo()),
                 SidebarItem("Shapes", ShapesDemo()),
                 SidebarItem("Sliders", SliderDemo()),
                 SidebarItem("Text", TextDemo()),

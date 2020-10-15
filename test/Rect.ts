@@ -4,7 +4,7 @@ import { Rect } from '../src/Types/Rect';
 
 describe('Rect', () => {
     it('can be created as empty', () => {
-        const rect = Rect.fromEmpty();
+        const rect = Rect()
         expect(rect.left).to.equal(0.0);
         expect(rect.top).to.equal(0.0);
         expect(rect.right).to.equal(0.0);

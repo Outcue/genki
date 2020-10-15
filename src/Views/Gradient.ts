@@ -26,6 +26,10 @@ abstract class GradientView extends RectangleShape {
         super()
         this._gradient = View.Context.gradient(type)
     }
+
+    public removed() {
+        this._gradient.remove()
+    }
 }
 
 export class LinearGradientView extends GradientView {

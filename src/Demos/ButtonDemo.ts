@@ -35,16 +35,13 @@ class ButtonDemoBuilder implements ViewBuilder {
         return HStack(
 
             Button("Click Me", () => {
-                console.log('Clicked')
             }),
 
             Button("Disabled", () => {
-                console.log('Clicked')
             })
                 .disabled(true),
 
             Button("Click Me", () => {
-                console.log('Clicked')
             })
                 .font(Font.system(24, Font.Weight.ultralight)),
 

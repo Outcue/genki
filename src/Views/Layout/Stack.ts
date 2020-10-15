@@ -142,6 +142,7 @@ export class StackLayout extends Layout {
             }
         }
     }
+}
 
 // MARK: ZStack
 

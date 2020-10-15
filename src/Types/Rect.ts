@@ -17,30 +17,36 @@ export interface RectData {
     height?: number
 }
 
-export class Rect {
+export interface Rect {
+    readonly left: number
+    readonly top: number
+    readonly right: number
+    readonly bottom: number
+}
 
-    static fromEmpty() {
-        return new Rect(0, 0, 0, 0)
-    }
+class _Rect implements Rect {
 
     static fromLTRB(
         left: number,
         top: number,
         right: number,
         bottom: number) {
-        return new Rect(left, top, right, bottom)
+        return new _Rect(left, top, right, bottom)
     }
 
     constructor(
-        readonly left: number,
-        readonly top: number,
-        readonly right: number,
-        readonly bottom: number) {
+        readonly left: number = 0.0,
+        readonly top: number = 0.0,
+        readonly right: number = 0.0,
+        readonly bottom: number = 0.0,) {
     }
 
     public isValid(): boolean {
         return (this.left <= this.right) && (this.top <= this.bottom)
     }
+}
 
+export function Rect() {
+    return new _Rect()
 }
 

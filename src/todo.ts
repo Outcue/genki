@@ -129,10 +129,8 @@ autorun(() => {
     // let itemStore = localStorage.getItem(Store)
     // if (itemStore) {
     //     Object.assign(itemStore, serializedItems)
-    //     console.log(serializedItems)
     // } else {
     //     localStorage.setItem(Store, serializedItems);
-    //     console.log(serializedItems)
     // }
 })
 

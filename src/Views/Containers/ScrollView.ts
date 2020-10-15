@@ -12,37 +12,37 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Element, ForeignObject, Svg, SVG } from '@svgdotjs/svg.js'
+import { ForeignObject, SVG } from '@svgdotjs/svg.js'
 
 
 import { Point, } from '../../Types/Point';
+import { Layout } from '../Layout/Layout'
 import { AnyView, View } from '../View'
 
 
-export class ScrollViewView extends View<ScrollViewView> {
+export class ScrollViewView extends Layout {
 
     private _foreignObject: ForeignObject
-    private _scroller: Element
-    private _context: Svg
-
     constructor() {
 
-        super(View.Context.foreignObject(0, 0))
+        super()
 
-        this._foreignObject = this.element as ForeignObject
-        this._scroller = SVG(
-            '<div style="overflow: auto;"/>'
-        )
-        this._foreignObject.add(this._scroller)
-        this.addElement(this._scroller)
+        this.group.data('layout', 'ScrollView')
 
-        this._context = View.Context.nested()
-        this._scroller.add(this._context)
+        this._foreignObject = View.Context.foreignObject(0, 0)
+        this._foreignObject.data('view', 'Scroll Container')
+
+        const div = document.createElement('div')
+        div.style.overflow = 'auto'
+        const dom = SVG(div)
+        this._foreignObject.add(dom)
+
+        this.group.add(this._foreignObject)
+        //this.addElement(this._foreignObject)
     }
 
     public addChild(child: AnyView) {
         super.addChild(child)
-        this._context.add(child.element)
         this.updateScrollExtents()
     }
 
@@ -56,13 +56,13 @@ export class ScrollViewView extends View<ScrollViewView> {
         if (this.children.length) {
 
             const child = this.children[0]
-            this._context.width(
+            this.group.width(
                 Math.max(
-                    this._context.width() as number,
+                    this.group.width() as number,
                     child.getWidth() as number))
-            this._context.height(
+            this.group.height(
                 Math.max(
-                    this._context.height() as number,
+                    this.group.height() as number,
                     child.getHeight() as number))
         }
     }
