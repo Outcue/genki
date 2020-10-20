@@ -12,31 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
-import { LGraph, LGraphCanvas, LiteGraph } from 'litegraph.js';
+import { SVG } from '@svgdotjs/svg.js'
+import '@svgdotjs/svg.draggable.js'
 
 window.onresize = () => {
 }
 
 window.onload = () => {
 
-    const graph = new LGraph();
+    var draw = SVG()
+        .addTo('#genki_root')
+        .size(2000, 2000)
+    var rect = draw.rect(100, 100)
 
-    const canvas = new LGraphCanvas("#graph", graph);
-
-    const node_const = LiteGraph.createNode("basic/const");
-    node_const.pos = [200, 200];
-    graph.add(node_const);
-    node_const.setValue(4.5);
-
-    const node_watch = LiteGraph.createNode("basic/watch");
-    node_watch.pos = [700, 200];
-    graph.add(node_watch);
-
-    node_const.connect(0, node_watch, 0);
-
-    graph.start()
-
+    rect.draggable()
 }
 
 

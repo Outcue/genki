@@ -15,28 +15,28 @@
 import { autorun } from 'mobx'
 import { SVG } from '@svgdotjs/svg.js'
 
-import { State, StateArray, StateValue } from './Bindings/State'
+import { State, StateArray, StateValue } from '../../Bindings/State'
 
-import { Color } from './Types/Color'
-import { Edge } from './Types/Types'
-import { Font } from './Types/Font'
-import { VoidAction, BoolAction } from './Types/Actions'
+import { Color } from '../../Types/Color'
+import { Edge } from '../../Types/Types'
+import { Font } from '../../Types/Font'
+import { VoidAction, BoolAction } from '../../Types/Actions'
 
-import { RootLayout, HStack, VStack, ZStack } from './Views/Layout/Layouts'
+import { RootLayout, HStack, VStack, ZStack } from '../../Views/Layout/Layouts'
 
-import { Identifiable } from './Types/Identifiable'
+import { Identifiable } from '../../Types/Identifiable'
 
-import { AnyView, View, ViewBuilder } from './Views/View'
-import { Button, ButtonView } from './Views/Buttons/Button'
-import { Spacer } from './Views/Spacers/Spacers'
-import { Image, ImageView } from './Views/Image'
-import { Text, TextField } from './Views/Text/Text'
+import { AnyView, View, ViewBuilder } from '../../Views/View'
+import { Button, ButtonView } from '../../Views/Buttons/Button'
+import { Spacer } from '../../Views/Spacers/Spacers'
+import { Image, ImageView } from '../../Views/Image'
+import { Text, TextField } from '../../Views/Text/Text'
 
-import { ForEach } from './Views/Containers/ForEach'
+import { ForEach } from '../../Views/Containers/ForEach'
 
-import { Rectangle } from './Shapes/Shapes'
+import { Rectangle } from '../../Shapes/Shapes'
 
-import { Assets } from './assets'
+import { Assets } from '../../assets'
 
 
 // MARK: - Window callbacks
