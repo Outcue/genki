@@ -20,6 +20,8 @@ import { PortIndex, PortType } from './PortType'
 export class Node extends BaseNode {
 
     readonly nodeState: NodeState
+    private _nodeGeometry NodeGeometry
+
 
     constructor(readonly nodeDataModel: NodeDataModel) {
         super()
