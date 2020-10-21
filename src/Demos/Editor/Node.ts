@@ -12,9 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import { Connection } from './Connection'
 import { BaseNode, NodeData, NodeDataModel } from './NodeData'
-import { NodeState } from './NodeState'
-import { PortIndex } from './PortType'
+import { NodeState, NodeConnectionReaction } from './NodeState'
+import { PortIndex, PortType } from './PortType'
 
 export class Node extends BaseNode {
 
@@ -27,18 +28,28 @@ export class Node extends BaseNode {
 
     /// Propagates incoming data to the underlying model.
     propagateData(nodeData: NodeData, index: PortIndex): void {
-        //this.nodeDataModel -> setInData(std:: move(nodeData), inPortIndex);
+
+        this.nodeDataModel.setInData(nodeData, index)
+        this.updateVisuals()
     }
 
     /// Fetches data from model's OUT #index port
     /// and propagates it to the connection
-    onDataUpdated(index: PortIndex) {
+    onDataUpdated(port: PortIndex) {
 
-        //     auto nodeData = _nodeDataModel->outData(inPort);
-        // const auto connections = _nodeState.connections(PortType::Out, inPort);
-        // for (const auto& c : connections) {
-        //     c.second->propagateData(nodeData);
-        // }
+        const nodeData = this.nodeDataModel.outData(port)
+        const connections = this.nodeState.connections(PortType.Out, port)
+        connections.forEach((value: Connection, _: string) => {
+            value.propagateData(nodeData)
+        })
+    }
+
+    updateVisuals() {
+    }
+
+    resetReactionToConnection() {
+        this.nodeState.setReaction(NodeConnectionReaction.NotReacting)
+        //this._nodeGraphicsObject.update();
     }
 
 }

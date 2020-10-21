@@ -69,9 +69,12 @@ export interface NodeDataModel {
     nPorts(portType: PortType): number
     dataType(portType: PortType, portIndex: PortIndex): NodeDataType
     outData(port: PortIndex): NodeData
+    setInData(nodeData: NodeData, index: PortIndex): void
 }
 
 class Port {
+
+    public data: NodeData
 
     constructor(
         readonly type: PortType,
@@ -81,7 +84,7 @@ class Port {
     }
 }
 
-function makeUUID() {
+export function makeUUID() {
     // Reference: https://stackoverflow.com/a/2117523/709884
     return ("10000000-1000-4000-8000-100000000000").replace(/[018]/g, s => {
         const c = Number.parseInt(s, 10)
@@ -104,28 +107,49 @@ export class BaseNode implements NodeDataModel {
     type(): string { return "" }
 
     nPorts(portType: PortType): number {
-        if (portType == PortType.In) {
-            return this._inputs.length
-        } else if (portType == PortType.Out) {
-            return this._outputs.length
-        } else {
-            return {}
+
+        switch (portType) {
+
+            case PortType.In:
+                return this._inputs.length
+
+            case PortType.Out:
+                return this._outputs.length
+
+            default:
+                return 0
         }
     }
 
     dataType(portType: PortType, portIndex: PortIndex): NodeDataType {
 
-        if (portType == PortType.In) {
-            return this._inputs[portIndex].dataType
-        } else if (portType == PortType.Out) {
-            return this._outputs[portIndex].dataType
-        } else {
-            return NODE_DATA_TYPE[PT_NONE];
+        switch (portType) {
+
+            case PortType.In:
+                return this._inputs[portIndex].dataType
+
+            case PortType.Out:
+                return this._outputs[portIndex].dataType
+
+            default:
+                return new NodeDataType()
         }
     }
 
     outData(port: PortIndex): NodeData {
         return new NodeData()
+    }
+
+    setInData(nodeData: NodeData, index: PortIndex) {
+        this._inputs[index].data = nodeData
+        this.inDataSet(index)
+        this.process()
+    }
+
+    inDataSet(index: PortIndex) {
+    }
+
+    process() {
     }
 
     portOutConnectionPolicy(index: PortIndex): ConnectionPolicy {

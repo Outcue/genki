@@ -18,20 +18,18 @@ export const enum PortType {
     Out
 }
 
-export const INVALID = -1
+export const InvalidPort = -1
 
 export type PortIndex = number
 
 export class Port {
 
-    type: PortType = PortType.None
-    index: PortIndex = INVALID
-
-    Port(type: PortType = PortType.None, index: PortIndex = INVALID) {
-
+    constructor(
+        readonly type: PortType = PortType.None,
+        private index: PortIndex = InvalidPort) {
     }
 
-    indexIsValid(): boolean { return this.index != INVALID }
+    indexIsValid(): boolean { return this.index != InvalidPort }
     portTypeIsValid(): boolean { return this.type != PortType.None }
 
     oppositePort(port: PortType): PortType {

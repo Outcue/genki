@@ -12,29 +12,92 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { NodeDataModel } from './NodeData'
-import { PortType } from './PortType'
+import { Connection } from './Connection'
+import { NodeDataModel, NodeDataType } from './NodeData'
+import { PortIndex, PortType } from './PortType'
+
+type ConnectionSet = Map<string, Connection>
+
+const DefaultDataType = new NodeDataType()
+
+export const enum NodeConnectionReaction {
+    Reacting,
+    NotReacting
+}
 
 export class NodeState {
 
-    //     std:: vector<ConnectionPtrSet> _inConnections;
-    //     std:: vector<ConnectionPtrSet> _outConnections;
+    private _inConnections: Array<ConnectionSet>
+    private _outConnections: Array<ConnectionSet>
+    private _reaction = NodeConnectionReaction.NotReacting
+    private _reactingPortType = PortType.None
+    private _reactingDataType: NodeDataType
+    private _resizing = false
 
-    //     ReactToConnectionState _reaction;
-    //     PortType     _reactingPortType;
-    //     NodeDataType _reactingDataType;
+    constructor(private model: NodeDataModel) {
 
-    //     bool _resizing;
-
-
-    //     : _inConnections(model-> nPorts(PortType:: In))
-    // , _outConnections(model -> nPorts(PortType:: Out))
-    //     , _reaction(NOT_REACTING)
-    //     , _reactingPortType(PortType:: None)
-    //     , _resizing(false)
-
-
-    constructor(model: NodeDataModel) {
+        this._inConnections = new Array<ConnectionSet>(model.nPorts(PortType.In))
+        this._outConnections = new Array<ConnectionSet>(model.nPorts(PortType.Out))
     }
 
+    connections(portType: PortType, portIndex: PortIndex) {
+        const connections = this.getEntries(portType)
+        return connections[portIndex]
+    }
+
+    getEntries(portType: PortType) {
+        if (portType == PortType.In)
+            return this._inConnections
+        else
+            return this._outConnections
+    }
+
+    setConnection(portType: PortType,
+        portIndex: PortIndex,
+        connection: Connection) {
+        const connections = this.getEntries(portType);
+        connections[portIndex] = new Map<string, Connection>([
+            [connection.id, connection]
+        ])
+    }
+
+    eraseConnection(
+        portType: PortType,
+        portIndex: PortIndex,
+        id: string) {
+        this.getEntries(portType)[portIndex].delete(id)
+    }
+
+    reaction(): NodeConnectionReaction {
+        return this._reaction
+    }
+
+    reactingPortType(): PortType {
+        return this._reactingPortType
+    }
+
+    reactingDataType(): NodeDataType {
+        return this._reactingDataType
+    }
+
+    setReaction(
+        reaction: NodeConnectionReaction,
+        reactingPortType: PortType = PortType.None,
+        reactingDataType: NodeDataType = DefaultDataType) {
+        this._reaction = reaction
+        this._reactingPortType = reactingPortType
+        this._reactingDataType = reactingDataType
+    }
+
+    isReacting() {
+        return this._reaction == NodeConnectionReaction.Reacting
+    }
+
+    setResizing(resizing: boolean) {
+        this._resizing = resizing
+    }
+
+    resizing(): boolean {
+        return this._resizing
+    }
 }
