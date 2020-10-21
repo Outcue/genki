@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import { Parameter } from './Parameter'
 import { PortIndex, PortType } from './PortType'
 
 export class NodeDataType {
@@ -19,10 +20,23 @@ export class NodeDataType {
     name: String
 }
 
+export const enum NodeClass {
+    Animation,
+    Color,
+    Effect,
+    Filter,
+    Item,
+    Integer,
+    Path,
+    Scalar,
+    Scalar2D,
+    Transition
+}
+
 /// Class represents data transferred between nodes.
 /// @param type is used for comparing the types
 /// The actual data is stored in subtypes
-class NodeData {
+export class NodeData {
 
     private _type: NodeDataType
 
@@ -46,7 +60,7 @@ const enum ConnectionPolicy {
     Many
 }
 
-interface NodeDataModel {
+export interface NodeDataModel {
 
     initialize(): void
 
@@ -57,9 +71,30 @@ interface NodeDataModel {
     outData(port: PortIndex): NodeData
 }
 
-class BaseNode implements NodeDataModel {
+class Port {
 
-    private _id: string
+    constructor(
+        readonly type: PortType,
+        readonly dataType: NodeDataType,
+        readonly name: string,
+        readonly nodeClass: NodeClass) {
+    }
+}
+
+function makeUUID() {
+    // Reference: https://stackoverflow.com/a/2117523/709884
+    return ("10000000-1000-4000-8000-100000000000").replace(/[018]/g, s => {
+        const c = Number.parseInt(s, 10)
+        return (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+    })
+}
+
+export class BaseNode implements NodeDataModel {
+
+    private _id = makeUUID()
+    private _inputs = new Array<Port>()
+    private _outputs = new Array<Port>()
+    private _parameters = new Array<Parameter>()
 
     initialize(): void {
     }
@@ -68,10 +103,25 @@ class BaseNode implements NodeDataModel {
 
     type(): string { return "" }
 
-    nPorts(portType: PortType): number { return 0 }
+    nPorts(portType: PortType): number {
+        if (portType == PortType.In) {
+            return this._inputs.length
+        } else if (portType == PortType.Out) {
+            return this._outputs.length
+        } else {
+            return {}
+        }
+    }
 
     dataType(portType: PortType, portIndex: PortIndex): NodeDataType {
-        return new NodeDataType()
+
+        if (portType == PortType.In) {
+            return this._inputs[portIndex].dataType
+        } else if (portType == PortType.Out) {
+            return this._outputs[portIndex].dataType
+        } else {
+            return NODE_DATA_TYPE[PT_NONE];
+        }
     }
 
     outData(port: PortIndex): NodeData {
