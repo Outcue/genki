@@ -47,3 +47,21 @@ export class NodeStyle implements NodeStyleBase {
     loadJsonFile(fileName: string): void {
     }
 }
+
+export class ConnectionStyle implements NodeStyleBase {
+    loadJsonText(jsonText: string): void {
+    }
+
+    loadJsonFile(fileName: string): void {
+    }
+
+}
+
+export class NodeViewStyle implements NodeStyleBase {
+    loadJsonText(jsonText: string): void {
+    }
+
+    loadJsonFile(fileName: string): void {
+    }
+
+}

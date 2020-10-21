@@ -1,25 +1,25 @@
 
 export class Font {
 
-    static readonly DefaultSize = 12.0
+  static readonly DefaultSize = 12.0
 
-    constructor(
-        public size = Font.DefaultSize,
-        public design = Font.Design.default,
-        public weight: number,
-        public smallCaps: boolean,
-        public italic: boolean,
-        public bold: boolean,
-        public monospaceDigits: boolean,
-        public leading: Font.Leading) {
-    }
+  constructor(
+    public size = Font.DefaultSize,
+    public design = Font.Design.default,
+    public weight: number,
+    public smallCaps: boolean,
+    public italic: boolean,
+    public bold: boolean,
+    public monospaceDigits: boolean,
+    public leading: Font.Leading) {
+  }
 
-    family(): string {
+  family(): string {
 
-        switch (this.design) {
+    switch (this.design) {
 
-            case Font.Design.monospaced:
-                return "Consolas, \
+      case Font.Design.monospaced:
+        return "Consolas, \
                         'Andale Mono WT' \
                         'Andale Mono', \
                         'Lucida Console', \
@@ -33,11 +33,11 @@ export class Font {
                         Courier, \
                         monospace"
 
-            // case Font.Design.rounded: // Not supported due to browsers not having a rounded font builtin
-            //     return Self.default.description
+      // case Font.Design.rounded: // Not supported due to browsers not having a rounded font builtin
+      //     return Self.default.description
 
-            case Font.Design.serif:
-                return "Cambria, \
+      case Font.Design.serif:
+        return "Cambria, \
                         'Hoefler Text',\
                         Utopia,\
                         'Liberation Serif',\
@@ -46,9 +46,9 @@ export class Font {
                         'Times New Roman',\
                         serif"
 
-            case Font.Design.default:
-            default:
-                return "system, \
+      case Font.Design.default:
+      default:
+        return "system, \
                         -apple-system, \
                         '.SFNSText - Regular', \
                         'San Francisco', \
@@ -57,90 +57,90 @@ export class Font {
                         'Helvetica Neue', \
                         'Lucida Grande', \
                         sans-serif"
-        }
     }
+  }
 
-    static system(
-        size: number = Font.DefaultSize,
-        weight: Font.Weight = Font.Weight.regular,
-        design: Font.Design = Font.Design.default): Font {
-        return new Font(
-            size,
-            design,
-            weight,
-            false,
-            false,
-            false,
-            false,
-            Font.Leading.standard
-        )
-    }
+  static system(
+    size: number = Font.DefaultSize,
+    weight: Font.Weight = Font.Weight.regular,
+    design: Font.Design = Font.Design.default): Font {
+    return new Font(
+      size,
+      design,
+      weight,
+      false,
+      false,
+      false,
+      false,
+      Font.Leading.standard
+    )
+  }
 
-    static italic(
-        size: number = Font.DefaultSize,
-        weight: Font.Weight = Font.Weight.regular,
-        design: Font.Design = Font.Design.default): Font {
-        return new Font(
-            size,
-            design,
-            weight,
-            false,
-            true,
-            false,
-            false,
-            Font.Leading.standard
-        )
-    }
+  static italic(
+    size: number = Font.DefaultSize,
+    weight: Font.Weight = Font.Weight.regular,
+    design: Font.Design = Font.Design.default): Font {
+    return new Font(
+      size,
+      design,
+      weight,
+      false,
+      true,
+      false,
+      false,
+      Font.Leading.standard
+    )
+  }
 
-    static smallCaps(
-        size: number = Font.DefaultSize,
-        weight: Font.Weight = Font.Weight.regular,
-        design: Font.Design = Font.Design.default): Font {
-        return new Font(
-            size,
-            design,
-            weight,
-            true,
-            false,
-            false,
-            false,
-            Font.Leading.standard
-        )
-    }
+  static smallCaps(
+    size: number = Font.DefaultSize,
+    weight: Font.Weight = Font.Weight.regular,
+    design: Font.Design = Font.Design.default): Font {
+    return new Font(
+      size,
+      design,
+      weight,
+      true,
+      false,
+      false,
+      false,
+      Font.Leading.standard
+    )
+  }
 }
 
 export namespace Font {
 
-    export const enum Design {
-        default,
-        serif,
-        rounded,
-        monospaced
-    }
+  export const enum Design {
+    default,
+    serif,
+    rounded,
+    monospaced
+  }
 
-    export const enum Leading {
-        standard,
-        tight,
-        loose
-    }
+  export const enum Leading {
+    standard,
+    tight,
+    loose
+  }
 
-    export const enum Weight {
-        ultralight = 100,
-        ultraLight = 100,
-        thin = 200,
-        light = 300,
-        regular = 400,
-        medium = 500,
-        semibold = 600,
-        bold = 700,
-        heavy = 800,
-        black = 900
-    }
+  export const enum Weight {
+    ultralight = 100,
+    ultraLight = 100,
+    thin = 200,
+    light = 300,
+    regular = 400,
+    medium = 500,
+    semibold = 600,
+    bold = 700,
+    heavy = 800,
+    black = 900
+  }
 }
 
 /*
   extension Font.Leading: CustomStringConvertible {
-    public var description: String {
+    public var description: string {
       switch self {
       case .standard:
         return "normal"
@@ -153,7 +153,7 @@ export namespace Font {
   }
 
   extension Font: StylesConvertible {
-    public var styles: [String: String] {
+    public var styles: [string: string] {
       [
         "font-family": _name == _FontNames.system.rawValue ? _design.description : _name,
         "font-weight": "\(_bold ? Font.Weight.bold.value : _weight.value)",

@@ -16,8 +16,8 @@ import { Parameter } from './Parameter'
 import { PortIndex, PortType } from './PortType'
 
 export class NodeDataType {
-    id: String
-    name: String
+    id: string
+    name: string
 }
 
 export const enum NodeClass {
@@ -49,13 +49,13 @@ export class NodeData {
     }
 }
 
-const enum NodeValidationState {
+export const enum NodeValidationState {
     Valid,
     Warning,
     Error
 }
 
-const enum ConnectionPolicy {
+export const enum ConnectionPolicy {
     One,
     Many
 }
@@ -70,6 +70,12 @@ export interface NodeDataModel {
     dataType(portType: PortType, portIndex: PortIndex): NodeDataType
     outData(port: PortIndex): NodeData
     setInData(nodeData: NodeData, index: PortIndex): void
+    caption(): string
+    captionVisible(): boolean
+    portCaption(type: PortType, index: PortIndex): string
+    portCaptionVisible(type: PortType, index: PortIndex): boolean
+    validationState(): NodeValidationState
+    validationMessage(): string
 }
 
 class Port {
@@ -103,8 +109,33 @@ export class BaseNode implements NodeDataModel {
     }
 
     name(): string { return "" }
-
     type(): string { return "" }
+
+    caption(): string {
+        const name = this.name().length <= 0 ? "" : " : " + this.name()
+        return this.type() + name;
+    }
+
+    captionVisible(): boolean {
+        return true
+    }
+
+    portCaption(_: PortType, __: PortIndex): string {
+        return ""
+    }
+
+    portCaptionVisible(_: PortType, __: PortIndex): boolean {
+        return false
+    }
+
+    validationState(): NodeValidationState {
+        return NodeValidationState.Valid
+    }
+
+    validationMessage(): string {
+        return ""
+    }
+
 
     nPorts(portType: PortType): number {
 
@@ -157,9 +188,6 @@ export class BaseNode implements NodeDataModel {
     }
 
     resizable(): boolean { return false }
-
-    validationState(): NodeValidationState { return NodeValidationState.Valid }
-    validationMessage(): string { return "" }
 
     getID(): string { return this._id }
     setID(inId: string): void { this._id = inId }

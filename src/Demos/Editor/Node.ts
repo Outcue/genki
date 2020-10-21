@@ -14,6 +14,7 @@
 
 import { Connection } from './Connection'
 import { BaseNode, NodeData, NodeDataModel } from './NodeData'
+import { NodeGeometry } from './NodeGeometry'
 import { NodeState, NodeConnectionReaction } from './NodeState'
 import { PortIndex, PortType } from './PortType'
 
@@ -21,7 +22,6 @@ export class Node extends BaseNode {
 
     readonly nodeState: NodeState
     private _nodeGeometry NodeGeometry
-
 
     constructor(readonly nodeDataModel: NodeDataModel) {
         super()
