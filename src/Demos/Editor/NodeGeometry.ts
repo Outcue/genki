@@ -54,8 +54,8 @@ export class NodeGeometry {
     private _nSources: number
     private _nSinks: number
 
-    private _fontMetrics: FontMetrics
-    private _boldFontMetrics: FontMetrics
+    private _fontMetrics = new FontMetrics()
+    private _boldFontMetrics = new FontMetrics()
 
     constructor(private _dataModel: NodeDataModel) {
         this._nSources = this._dataModel.nPorts(PortType.Out)
@@ -75,7 +75,7 @@ export class NodeGeometry {
         })
     }
 
-    private recalculateSize() {
+    public recalculateSize() {
 
         this._entryHeight = this._fontMetrics.height()
 
@@ -140,18 +140,13 @@ export class NodeGeometry {
         return width
     }
 
-
     private validationHeight(): number {
         const msg = this._dataModel.validationMessage()
         return this._boldFontMetrics.boundingRect(msg).height()
     }
 
-
-
     private validationWidth(): number {
         const msg = this._dataModel.validationMessage()
         return this._boldFontMetrics.boundingRect(msg).width()
     }
-
-
 }

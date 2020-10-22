@@ -14,17 +14,19 @@
 
 import { makeUUID, NodeData } from './NodeData'
 import { Node } from './Node'
-import { InvalidPort, PortType } from './PortType'
+import { InvalidPort, PortIndex, PortType } from './PortType'
 
 /// Stores the currently dragged end.
 /// Remembers last hovered node.
 export class ConnectionState {
 
     private _requiredPort = PortType.None
-    private _lastHoveredNode?: Node
+    private _lastHoveredNode: Node | null = null
 
     setRequiredPort(end: PortType) {
         this._requiredPort = end
+
+
     }
 
     requiredPort() {
@@ -51,7 +53,7 @@ export class ConnectionState {
         this._lastHoveredNode = node
     }
 
-    lastHoveredNode(): Node {
+    lastHoveredNode(): Node | null {
         return this._lastHoveredNode
     }
 
@@ -73,6 +75,10 @@ export class Connection {
     private _outNode?: Node
     private _inPortIndex = InvalidPort
     private _outPortIndex = InvalidPort
+
+    constructor(portType: PortType, node: Node, portIndex: PortIndex) {
+
+    }
 
     propagateData(nodeData: NodeData) {
         if (this._inNode) {
