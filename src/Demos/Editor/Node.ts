@@ -15,17 +15,25 @@
 import { Connection } from './Connection'
 import { BaseNode, NodeData, NodeDataModel } from './NodeData'
 import { NodeGeometry } from './NodeGeometry'
+import { NodeGraphicsObject } from './NodeGraphicsObject'
 import { NodeState, NodeConnectionReaction } from './NodeState'
 import { PortIndex, PortType } from './PortType'
 
 export class Node extends BaseNode {
 
     readonly nodeState: NodeState
-    private _nodeGeometry NodeGeometry
+    private _nodeGeometry: NodeGeometry
+    private _nodeGraphicsObject?: NodeGraphicsObject
 
     constructor(readonly nodeDataModel: NodeDataModel) {
         super()
         this.nodeState = new NodeState(nodeDataModel)
+        this._nodeGeometry = new NodeGeometry(this.nodeDataModel)
+        this._nodeGeometry.recalculateSize()
+    }
+
+    set nodeGraphicsObject(object: NodeGraphicsObject) {
+        this._nodeGraphicsObject = object
     }
 
     /// Propagates incoming data to the underlying model.
@@ -51,7 +59,7 @@ export class Node extends BaseNode {
 
     resetReactionToConnection() {
         this.nodeState.setReaction(NodeConnectionReaction.NotReacting)
-        //this._nodeGraphicsObject.update();
+        this._nodeGraphicsObject.update()
     }
 
 }
