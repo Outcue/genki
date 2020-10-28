@@ -12,8 +12,54 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import { Shape } from '@svgdotjs/svg.js'
+
+import { Node } from './Node'
+import { NodeScene } from './NodeScene'
+import { Rect } from './NodeTypes'
+
 export class NodeGraphicsObject {
 
+    private _locked = false
+    private _alternateFill = false
+    readonly shape?: Shape
+
+    constructor(private node: Node, private scene: NodeScene) {
+
+        this.shape = this.scene.context.rect()
+
+        const nodeStyle = this.node.nodeDataModel.nodeStyle()
+        this.setOpacity(nodeStyle.Opacity)
+        this.setAcceptHoverEvents(true)
+        this.setZValue(0)
+
+        this.shape.attr({
+            fill: nodeStyle.FillColor.toString(),
+            opacity: nodeStyle.Opacity
+        })
+
+        const geom = this.node.nodeGeometry
+        const bounds = geom.boundingRect()
+        this.shape.x(bounds.x)
+        this.shape.y(bounds.y)
+        this.shape.width(bounds.width)
+        this.shape.height(bounds.height)
+
+        this.scene.addItem(this)
+    }
+
+    setOpacity(value: number): void {
+    }
+
+    setAcceptHoverEvents(value: boolean): void {
+    }
+
+    setZValue(value: number): void {
+    }
+
+    boundingRect(): Rect {
+        return this.node.nodeGeometry.boundingRect()
+    }
 
     update() {
     }

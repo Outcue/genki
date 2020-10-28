@@ -12,10 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Point, Rect } from '@svgdotjs/svg.js'
+import { Point } from '@svgdotjs/svg.js'
 
 import { NodeDataModel, NodeValidationState } from './NodeData'
 import { PortType } from './PortType'
+import { Rect } from './NodeTypes'
 import { StyleCollection } from './StyleCollection'
 
 const vPad = 8.0
@@ -67,12 +68,12 @@ export class NodeGeometry {
         const nodeStyle = StyleCollection.nodeStyle
         const hPad = 2.0 * nodeStyle.ConnectionPointDiameter
 
-        return new Rect({
-            x: 0 - hPad,
-            y: 0 - vPad,
-            width: this._width + 2 * hPad,
-            height: this._height + vPad2X
-        })
+        return new Rect(
+            0 - hPad,
+            0 - vPad,
+            this._width + 2 * hPad,
+            this._height + vPad2X
+        )
     }
 
     public recalculateSize() {

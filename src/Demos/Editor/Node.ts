@@ -32,6 +32,10 @@ export class Node extends BaseNode {
         this._nodeGeometry.recalculateSize()
     }
 
+    get nodeGeometry(): NodeGeometry {
+        return this._nodeGeometry
+    }
+
     set nodeGraphicsObject(object: NodeGraphicsObject) {
         this._nodeGraphicsObject = object
     }

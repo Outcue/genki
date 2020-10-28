@@ -11,3 +11,15 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
+import { SVG } from '@svgdotjs/svg.js'
+
+import { NodeGraphicsObject } from './NodeGraphicsObject'
+
+export class NodeScene {
+
+    readonly context = SVG()
+
+    addItem(item: NodeGraphicsObject) {
+    }
+}

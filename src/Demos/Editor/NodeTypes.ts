@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import { RectAttr } from '@svgdotjs/svg.js'
+
 export const eU32_MAX = 0xffffffff
 export const eS32_MIN = -2147483647 - 1
 export const eS32_MAX = 2147483647
@@ -25,7 +27,6 @@ export const eF32_MAX = 3.402823466e+38
 export const eF32_MIN = -eF32_MAX
 export const eF32_INF = 1e30
 export const eALMOST_ZERO = .00001
-
 
 class XY<T>
 {
@@ -54,4 +55,12 @@ export type IXYZ = XYZ<BigInt>
 export type IXYZW = XYZW<BigInt>
 
 
+export class Rect implements RectAttr {
 
+    constructor(
+        readonly x = 0,
+        readonly y = 0,
+        readonly width = 0,
+        readonly height = 0) {
+    }
+}

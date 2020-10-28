@@ -12,12 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import { NodeStyle } from './NodeStyle'
 import { Parameter } from './Parameter'
 import { PortIndex, PortType } from './PortType'
 
 export class NodeDataType {
-    id: string
-    name: string
+    id = ""
+    name = ""
 }
 
 export const enum NodeClass {
@@ -76,6 +77,7 @@ export interface NodeDataModel {
     portCaptionVisible(type: PortType, index: PortIndex): boolean
     validationState(): NodeValidationState
     validationMessage(): string
+    nodeStyle(): NodeStyle
 }
 
 class Port {

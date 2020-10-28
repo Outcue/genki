@@ -59,17 +59,17 @@ export abstract class AnyView extends Identifiable {
     protected _width = State<number>(0.0)
     protected _height = State<number>(0.0)
 
-    protected appearAction: VoidAction
-    protected disappearAction: VoidAction
+    protected appearAction?: VoidAction
+    protected disappearAction?: VoidAction
 
-    private readonly _intersector: IntersectionObserver
+    private readonly _intersector?: IntersectionObserver
 
     private _animation = Animation.basic
     private _animations = new Map<Element, {}>()
 
-    protected _shadowFilter: Filter
+    protected _shadowFilter?: Filter
 
-    private _parent: AnyView
+    private _parent?: AnyView
 
     constructor(readonly element?: Element) {
 
@@ -98,7 +98,10 @@ export abstract class AnyView extends Identifiable {
                 })
             }, options)
 
-            this._intersector.observe(document.getElementById(this.id))
+            const foundElement = document.getElementById(this.id)
+            if (foundElement) {
+                this._intersector.observe(foundElement)
+            }
         }
     }
 
@@ -180,7 +183,7 @@ export abstract class AnyView extends Identifiable {
         this.removed()
     }
 
-    public getParent(): AnyView {
+    public getParent(): AnyView | undefined {
         return this._parent
     }
 
@@ -550,7 +553,9 @@ export class View<T> extends AnyView {
     }
 
     public opacity(amount: number): T {
-        this.element.opacity(amount)
+        if (this.element) {
+            this.element.opacity(amount)
+        }
         return this as any
     }
 
@@ -573,7 +578,9 @@ export class View<T> extends AnyView {
             y = ShadowDataDefaults.y
         }
 
-        this.setShadow(color, radius, x, y)
+        if (color && radius && x && y) {
+            this.setShadow(color, radius, x, y)
+        }
 
         return this as any
     }
@@ -643,12 +650,16 @@ export class View<T> extends AnyView {
 
     // Transforms
     public offset({ x, y }: PointData = PointDataDefaults): T {
-        this.element.translate(x, y)
+        if (this.element) {
+            this.element.translate(x, y)
+        }
         return this as any
     }
 
     public rotate(degrees: number): T {
-        this.element.rotate(degrees, 328, 135)
+        if (this.element) {
+            this.element.rotate(degrees, 328, 135)
+        }
         return this as any
     }
 
@@ -658,15 +669,17 @@ export class View<T> extends AnyView {
 
     public scaleEffect({ amount, x, y }: ScaleData): T {
 
-        if (amount != null) {
-            this.element.transform({
-                scale: amount
-            })
-        } else {
-            this.element.transform({
-                scaleX: x ?? 1.0,
-                scaleY: y ?? 1.0
-            })
+        if (this.element) {
+            if (amount != null) {
+                this.element.transform({
+                    scale: amount
+                })
+            } else {
+                this.element.transform({
+                    scaleX: x ?? 1.0,
+                    scaleY: y ?? 1.0
+                })
+            }
         }
         return this as any
     }
@@ -708,9 +721,11 @@ export class View<T> extends AnyView {
             return this as any
         }
 
-        this.element.click(() => {
-            action(this)
-        })
+        if (this.element) {
+            this.element.click(() => {
+                action(this)
+            })
+        }
 
         return this as any
     }
@@ -721,13 +736,15 @@ export class View<T> extends AnyView {
             return this as any
         }
 
-        this.element.mouseover(() => {
-            action(true, this)
-        })
+        if (this.element) {
+            this.element.mouseover(() => {
+                action(true, this)
+            })
 
-        this.element.mouseout(() => {
-            action(false, this)
-        })
+            this.element.mouseout(() => {
+                action(false, this)
+            })
+        }
 
         return this as any
     }
@@ -748,17 +765,21 @@ export class View<T> extends AnyView {
     }
 
     protected setBackgroundColor(color: Color) {
-        this.element.attr({
-            fill: color.toString(),
-            opacity: color.a
-        })
+        if (this.element) {
+            this.element.attr({
+                fill: color.toString(),
+                opacity: color.a
+            })
+        }
     }
 
     protected setAccentColor(color: Color) {
-        this.element.attr({
-            fill: color.toString(),
-            opacity: color.a
-        })
+        if (this.element) {
+            this.element.attr({
+                fill: color.toString(),
+                opacity: color.a
+            })
+        }
     }
 
     protected updateBorder() {
@@ -769,10 +790,12 @@ export class View<T> extends AnyView {
             opacity: this._borderColor.a
         }
 
-        if (this.animationsEnabled()) {
-            this.addAnimation(this.element, attrs)
-        } else {
-            this.element.attr(attrs)
+        if (this.element) {
+            if (this.animationsEnabled()) {
+                this.addAnimation(this.element, attrs)
+            } else {
+                this.element.attr(attrs)
+            }
         }
     }
 
@@ -782,12 +805,13 @@ export class View<T> extends AnyView {
             this.layout.setWidth(width)
         }
 
-        this.element.width(width)
-        for (var element of this._elements) {
-            element.node.setAttribute("width", width.toString())
-            element.node.style.width = width.toString()
+        if (this.element) {
+            this.element.width(width)
+            for (var element of this._elements) {
+                element.node.setAttribute("width", width.toString())
+                element.node.style.width = width.toString()
+            }
         }
-
         this._width.set(width)
 
         // TODO: Invalidate layout
@@ -799,25 +823,30 @@ export class View<T> extends AnyView {
             this.layout.setHeight(height)
         }
 
-        this.element.height(height)
-        for (var element of this._elements) {
-            element.node.setAttribute("height", height.toString())
-            element.node.style.height = height.toString()
+        if (this.element) {
+            this.element.height(height)
+            for (var element of this._elements) {
+                element.node.setAttribute("height", height.toString())
+                element.node.style.height = height.toString()
+            }
         }
-
         this._height.set(height)
 
         // TODO: Invalidate layout
     }
 
     protected setX(x: number) {
-        this.element.x(x)
+        if (this.element) {
+            this.element.x(x)
+        }
         this._x.set(x)
         // Invalidate layout
     }
 
     protected setY(y: number) {
-        this.element.y(y)
+        if (this.element) {
+            this.element.y(y)
+        }
         this._y.set(y)
         // TODO: Invalidate layout
     }
@@ -829,18 +858,20 @@ export class View<T> extends AnyView {
         y: number
     ) {
 
-        if (this.element.attr('opacity') == 0.0) {
-            this.element.attr('opacity', 1.0)
-        }
+        if (this.element) {
+            if (this.element.attr('opacity') == 0.0) {
+                this.element.attr('opacity', 1.0)
+            }
 
-        this.element.filterWith((add: Filter) => {
-            const effect = add.flood(color.toString(), color.a)
-                .composite(add.$source, 'in')
-                .gaussianBlur(radius, radius)
-                .offset(x, y)
-            add.blend(add.$source, effect, null)
-            this._shadowFilter = add
-        })
+            this.element.filterWith((add: Filter) => {
+                const effect = add.flood(color.toString(), color.a)
+                    .composite(add.$source, 'in')
+                    .gaussianBlur(radius, radius)
+                    .offset(x, y)
+                add.blend(add.$source, effect, "")
+                this._shadowFilter = add
+            })
+        }
     }
 
     public setDisabled(isDisabled: boolean): void {
@@ -852,18 +883,19 @@ export class View<T> extends AnyView {
 
     public setHidden(isHidden: boolean): void {
 
-        if (isHidden) {
-            this.element.hide()
-            for (const element of this._elements) {
-                element.hide()
-            }
-        } else {
-            this.element.show()
-            for (const element of this._elements) {
-                element.show()
+        if (this.element) {
+            if (isHidden) {
+                this.element.hide()
+                for (const element of this._elements) {
+                    element.hide()
+                }
+            } else {
+                this.element.show()
+                for (const element of this._elements) {
+                    element.show()
+                }
             }
         }
-
         for (const child of this.children) {
             child.setHidden(isHidden)
         }
