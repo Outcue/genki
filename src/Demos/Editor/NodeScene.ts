@@ -20,6 +20,12 @@ export class NodeScene {
 
     readonly context = SVG()
 
+    constructor() {
+        this.context
+            .addTo('#genki_root')
+            .size(2000, 2000)
+    }
+
     addItem(item: NodeGraphicsObject) {
     }
 }

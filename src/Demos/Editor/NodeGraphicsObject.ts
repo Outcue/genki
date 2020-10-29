@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import { Shape } from '@svgdotjs/svg.js'
+import '@svgdotjs/svg.draggable.js'
 
 import { Node } from './Node'
 import { NodeScene } from './NodeScene'
@@ -20,13 +21,15 @@ import { Rect } from './NodeTypes'
 
 export class NodeGraphicsObject {
 
+    private readonly shape?: Shape
+
     private _locked = false
     private _alternateFill = false
-    readonly shape?: Shape
 
     constructor(private node: Node, private scene: NodeScene) {
 
         this.shape = this.scene.context.rect()
+        this.shape.draggable()
 
         const nodeStyle = this.node.nodeDataModel.nodeStyle()
         this.setOpacity(nodeStyle.Opacity)

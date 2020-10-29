@@ -12,20 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { SVG } from '@svgdotjs/svg.js'
-import '@svgdotjs/svg.draggable.js'
+import { NodeScene } from './NodeScene'
+
+var scene: NodeScene
 
 window.onresize = () => {
 }
 
 window.onload = () => {
-
-    var draw = SVG()
-        .addTo('#genki_root')
-        .size(2000, 2000)
-    var rect = draw.rect(100, 100)
-
-    rect.draggable()
+    scene = new NodeScene()
 }
 
 
