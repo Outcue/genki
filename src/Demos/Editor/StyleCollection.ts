@@ -18,9 +18,9 @@ export class StyleCollection {
 
     private static _instance: StyleCollection
 
-    private _connectionStyle: ConnectionStyle
-    private _nodeStyle: NodeStyle
-    private _nodeViewStyle: NodeViewStyle
+    private _connectionStyle?: ConnectionStyle
+    private _nodeStyle?: NodeStyle
+    private _nodeViewStyle?: NodeViewStyle
 
 
     static get instance() {

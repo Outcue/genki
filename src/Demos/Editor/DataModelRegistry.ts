@@ -34,9 +34,7 @@ export class DataModelRegistry {
         return null
     }
 
-    registerModel(
-        creator: NodeDataCreator,
-        category: string = "Nodes"): void {
+    registerModel<T>(category: string = "Nodes"): void {
 
         const exemplar = creator()
         const name = exemplar.name()

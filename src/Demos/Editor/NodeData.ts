@@ -64,9 +64,6 @@ export const enum ConnectionPolicy {
 export interface NodeDataModel {
 
     initialize(): void
-
-    name(): string
-    type(): string
     nPorts(portType: PortType): number
     dataType(portType: PortType, portIndex: PortIndex): NodeDataType
     outData(port: PortIndex): NodeData
@@ -78,6 +75,12 @@ export interface NodeDataModel {
     validationState(): NodeValidationState
     validationMessage(): string
     nodeStyle(): NodeStyle
+}
+
+interface NodeDataModelStatic {
+    new(): NodeDataModel
+    Name(): string
+    Type(): string
 }
 
 class Port {
@@ -100,6 +103,11 @@ export function makeUUID() {
     })
 }
 
+export function staticImplements<T>() {
+    return <U extends T>(constructor: U) => { constructor };
+}
+
+@staticImplements<NodeDataModelStatic>()
 export class BaseNode implements NodeDataModel {
 
     private _id = makeUUID()
@@ -107,11 +115,15 @@ export class BaseNode implements NodeDataModel {
     private _outputs = new Array<Port>()
     private _parameters = new Array<Parameter>()
 
-    initialize(): void {
+    public static Name(): string {
+        return ""
     }
 
-    name(): string { return "" }
-    type(): string { return "" }
+    public static Type(): string {
+        return ""
+    }
+    initialize(): void {
+    }
 
     caption(): string {
         const name = this.name().length <= 0 ? "" : " : " + this.name()
@@ -137,7 +149,6 @@ export class BaseNode implements NodeDataModel {
     validationMessage(): string {
         return ""
     }
-
 
     nPorts(portType: PortType): number {
 
@@ -193,6 +204,10 @@ export class BaseNode implements NodeDataModel {
 
     getID(): string { return this._id }
     setID(inId: string): void { this._id = inId }
+
+    nodeStyle(): NodeStyle {
+        return new NodeStyle()
+    }
 
     // observable::subject < void (PortIndex) > dataUpdated;
 }
