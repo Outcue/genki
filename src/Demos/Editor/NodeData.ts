@@ -85,7 +85,7 @@ interface NodeDataModelStatic {
 
 class Port {
 
-    public data: NodeData
+    public data?: NodeData
 
     constructor(
         readonly type: PortType,

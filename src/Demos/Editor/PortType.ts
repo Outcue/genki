@@ -52,3 +52,23 @@ export class Port {
         return result
     }
 }
+
+export function oppositePort(port: PortType): PortType {
+
+    var result = PortType.None;
+
+    switch (port) {
+        case PortType.In:
+            result = PortType.Out
+            break
+
+        case PortType.Out:
+            result = PortType.In
+            break;
+
+        default:
+            break;
+    }
+
+    return result
+}

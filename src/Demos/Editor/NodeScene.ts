@@ -14,18 +14,66 @@
 
 import { SVG } from '@svgdotjs/svg.js'
 
-import { NodeGraphicsObject } from './NodeGraphicsObject'
+import { Connection } from './Connection'
+import { DataModelRegistry } from './DataModelRegistry'
+import { Node } from './Node'
+import { NodeDataModel } from './NodeData'
+//import { NodeGraphicsObject } from './NodeGraphicsObject'
+import { PortIndex, PortType } from './PortType'
 
+// Scene holds connections and nodes
 export class NodeScene {
 
-    readonly context = SVG()
+    private _connections = new Map<string, Connection>()
+    private _nodes = new Map<string, Node>()
 
-    constructor() {
-        this.context
-            .addTo('#genki_root')
-            .size(2000, 2000)
+    constructor(readonly registry: DataModelRegistry) {
     }
 
-    addItem(item: NodeGraphicsObject) {
+    createConnection(
+        connectedPort: PortType,
+        node: Node,
+        portIndex: PortIndex) {
+
+        const connection = new Connection(connectedPort, node, portIndex)
+
+        // const cgo = detail:: make_unique<ConnectionGraphicsObject>(* this, * connection)
+
+        // // After this function connection points are set to node port
+        // connection .setGraphicsObject(std:: move(cgo))
+
+        this._connections.set(connection.id, connection)
+
+        this.connectionCreated(connection)
+
+        return connection
+    }
+
+    deleteConnection(connection: Connection) {
+        this.connectionDeleted(connection);
+        connection.removeFromNodes()
+        this._connections.delete(connection.id)
+    }
+
+    createNode(dataModel: NodeDataModel): Node {
+        const node = new Node(dataModel)
+        this._nodes.set(node.id, node)
+        node.nodeDataModel.initialize()
+        this.nodeCreated(node)
+        //node.nodeGraphicsObject.collapse();
+        return node
+    }
+
+    connectionCreated(connection: Connection) {
+        // TODO: signal?
+    }
+
+    connectionDeleted(connection: Connection) {
+        // TODO: signal?
+    }
+
+    nodeCreated(node: Node) {
+        // TODO: signal?
     }
 }
+

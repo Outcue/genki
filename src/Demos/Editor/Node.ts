@@ -12,8 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import { Point } from '@svgdotjs/svg.js'
+
 import { Connection } from './Connection'
-import { BaseNode, NodeData, NodeDataModel } from './NodeData'
+import { BaseNode, makeUUID, NodeData, NodeDataModel, NodeDataType } from './NodeData'
 import { NodeGeometry } from './NodeGeometry'
 import { NodeGraphicsObject } from './NodeGraphicsObject'
 import { NodeState, NodeConnectionReaction } from './NodeState'
@@ -30,6 +32,22 @@ export class Node extends BaseNode {
         this.nodeState = new NodeState(nodeDataModel)
         this._nodeGeometry = new NodeGeometry(this.nodeDataModel)
         this._nodeGeometry.recalculateSize()
+
+        //     // propagate data: model => node
+        // connect(_nodeDataModel.get(),
+        //         &NodeDataModel::dataUpdated,
+        //         this,
+        //         &Node::onDataUpdated);
+
+        // connect(_nodeDataModel.get(),
+        //         &NodeDataModel::captionChanged,
+        //         this,
+        //         &Node::onCaptionChanged);
+
+        // connect(_nodeDataModel.get(),
+        //         &NodeDataModel::layoutChanged,
+        //         this,
+        //         &Node::onLayoutChanged);
     }
 
     get nodeGeometry(): NodeGeometry {
@@ -38,6 +56,7 @@ export class Node extends BaseNode {
 
     set nodeGraphicsObject(object: NodeGraphicsObject) {
         this._nodeGraphicsObject = object
+
     }
 
     /// Propagates incoming data to the underlying model.
@@ -52,7 +71,7 @@ export class Node extends BaseNode {
     onDataUpdated(port: PortIndex) {
 
         const nodeData = this.nodeDataModel.outData(port)
-        const connections = this.nodeState.connections(PortType.Out, port)
+        const connections = this._nodeState.connections(PortType.Out, port)
         connections.forEach((value: Connection, _: string) => {
             value.propagateData(nodeData)
         })
@@ -61,9 +80,23 @@ export class Node extends BaseNode {
     updateVisuals() {
     }
 
+    reactToPossibleConnection(
+        reactingPortType: PortType,
+        reactingDataType: NodeDataType,
+        scenePoint: Point) {
+        //const t = _nodeGraphicsObject -> sceneTransform();
+        //const p = t.inverted().map(scenePoint);
+        //_nodeGeometry.setDraggingPosition(p)
+        //_nodeGraphicsObject -> update();
+        this.nodeState.setReaction(
+            NodeConnectionReaction.Reacting,
+            reactingPortType,
+            reactingDataType)
+    }
+
     resetReactionToConnection() {
         this.nodeState.setReaction(NodeConnectionReaction.NotReacting)
-        this._nodeGraphicsObject.update()
+        this.nodeGraphicsObject.update()
     }
 
 }

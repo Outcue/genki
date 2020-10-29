@@ -14,6 +14,9 @@
 
 import { makeUUID, NodeData } from './NodeData'
 import { Node } from './Node'
+import { NodeDataType } from './NodeData'
+import { oppositePort } from './PortType'
+
 import { InvalidPort, PortIndex, PortType } from './PortType'
 
 /// Stores the currently dragged end.
@@ -25,8 +28,6 @@ export class ConnectionState {
 
     setRequiredPort(end: PortType) {
         this._requiredPort = end
-
-
     }
 
     requiredPort() {
@@ -75,10 +76,110 @@ export class Connection {
     private _outNode?: Node
     private _inPortIndex = InvalidPort
     private _outPortIndex = InvalidPort
+    private _connectionState = new ConnectionState()
 
     constructor(portType: PortType, node: Node, portIndex: PortIndex) {
-
+        this.setNodeToPort(node, portType, portIndex);
+        this.setRequiredPort(oppositePort(portType));
     }
+
+    setRequiredPort(dragging: PortType) {
+        this._connectionState.setRequiredPort(dragging)
+
+        switch (dragging) {
+            case PortType.Out:
+                this._outNode = undefined
+                this._outPortIndex = InvalidPort
+                break
+
+            case PortType.In:
+                this._inNode = undefined
+                this._inPortIndex = InvalidPort
+                break
+
+            default:
+                break
+        }
+    }
+
+    setNodeToPort(node: Node,
+        portType: PortType,
+        portIndex: PortIndex) {
+        //const nodeWeak = this.getNode(portType)
+        if (portType == PortType.Out) {
+            this._outPortIndex = portIndex
+        } else {
+            this._inPortIndex = portIndex
+        }
+
+        this._connectionState.setNoRequiredPort();
+    }
+
+    removeFromNodes() {
+        if (this._inNode)
+            this._inNode.nodeState.eraseConnection(
+                PortType.In,
+                this._inPortIndex,
+                this.id)
+
+        if (this._outNode)
+            this._outNode.nodeState.eraseConnection(
+                PortType.Out,
+                this._outPortIndex,
+                this.id)
+    }
+
+    getNode(portType: PortType): Node | undefined {
+
+        switch (portType) {
+            case PortType.In:
+                return this._inNode
+
+            case PortType.Out:
+                return this._outNode
+
+            default:
+                break
+        }
+
+        return undefined
+    }
+
+    clearNode(portType: PortType) {
+
+        if (portType == PortType.In) {
+            this._inNode = undefined
+            this._inPortIndex = InvalidPort
+        } else {
+            this._outNode = undefined
+            this._outPortIndex = InvalidPort
+        }
+    }
+
+    dataType(portType: PortType): NodeDataType {
+        if (this._inNode && this._outNode) {
+            const isPortIn = portType == PortType.In
+            const model = isPortIn ? this._inNode.nodeDataModel : this._outNode.nodeDataModel
+            const index = isPortIn ? this._inPortIndex : this._outPortIndex
+            return model.dataType(portType, index)
+        } else {
+            if (this._inNode) {
+                portType = PortType.In
+                return this._inNode.nodeDataModel.dataType(
+                    portType,
+                    this._inPortIndex)
+            } else if (this._outNode) {
+                portType = PortType.Out
+                return this._outNode.nodeDataModel.dataType(
+                    portType,
+                    this._outPortIndex)
+            } else {
+                throw new Error("Unreachable")
+            }
+        }
+    }
+
+    // MARK: - Signals
 
     propagateData(nodeData: NodeData) {
         if (this._inNode) {
