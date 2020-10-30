@@ -26,7 +26,9 @@ export class NodeGraphicsObject {
     private _locked = false
     private _alternateFill = false
 
-    constructor(private node: Node, private scene: NodeScene) {
+    constructor(
+        private node: Node,
+        private scene: NodeScene) {
 
         this.shape = this.scene.context.rect()
         this.shape.draggable()

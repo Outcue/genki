@@ -14,19 +14,19 @@
 
 import { RectAttr } from '@svgdotjs/svg.js'
 
-export const eU32_MAX = 0xffffffff
-export const eS32_MIN = -2147483647 - 1
-export const eS32_MAX = 2147483647
-export const eU16_MAX = 0xffff
-export const eS16_MIN = -32768
-export const eS16_MAX = 32767
-export const eU8_MAX = 0xff
-export const eS8_MIN = -128
-export const eS8_MAX = 127
-export const eF32_MAX = 3.402823466e+38
-export const eF32_MIN = -eF32_MAX
-export const eF32_INF = 1e30
-export const eALMOST_ZERO = .00001
+export const U32_MAX = 0xffffffff
+export const S32_MIN = -2147483647 - 1
+export const S32_MAX = 2147483647
+export const U16_MAX = 0xffff
+export const S16_MIN = -32768
+export const S16_MAX = 32767
+export const U8_MAX = 0xff
+export const S8_MIN = -128
+export const S8_MAX = 127
+export const F32_MAX = 3.402823466e+38
+export const F32_MIN = -F32_MAX
+export const F32_INF = 1e30
+export const ALMOST_ZERO = .00001
 
 class XY<T>
 {

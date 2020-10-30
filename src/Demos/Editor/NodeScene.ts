@@ -24,10 +24,16 @@ import { PortIndex, PortType } from './PortType'
 // Scene holds connections and nodes
 export class NodeScene {
 
+    readonly context = SVG()
+
     private _connections = new Map<string, Connection>()
     private _nodes = new Map<string, Node>()
 
     constructor(readonly registry: DataModelRegistry) {
+
+        this.context
+            .addTo('#genki_root')
+            .size(2000, 2000)
     }
 
     createConnection(

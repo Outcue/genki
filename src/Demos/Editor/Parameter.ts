@@ -5,9 +5,11 @@
 
 import * as Type from './NodeTypes'
 
+import { BaseNode } from './NodeData'
+
 // NOTE: Add new items to the end. Changing the order will break saved
 // files as the enum index is used when serializing.
-const enum ParamType {
+export const enum ParameterType {
     NONE,
     STRING,
     BOOL,
@@ -32,23 +34,24 @@ const enum ParamType {
     JSON
 }
 
-export type eParamValue = any
+export type ParamValue = any
 
 export class Parameter {
 
-    private description: string
-    private isConnected = false
-    private isAnimatable = false
-    private isAnimated = false
-
-    private defaultValue: eParamValue
-    private baseValue: eParamValue
+    public description = ""
+    public isConnected = false
+    public isAnimatable = false
+    public isAnimated = false
+    public defaultValue: ParamValue
+    public baseValue: ParamValue
 
     constructor(
-        readonly type: ParamType,
+        readonly type: ParameterType,
         readonly name: string,
         readonly min: number,
-        readonly max: number) {
+        readonly max: number,
+        readonly node: BaseNode,
+        readonly group: string) {
     }
 
     setDescription(description: string) {
@@ -68,63 +71,63 @@ export class Parameter {
     }
 
     getValueAsBool(): boolean {
-        if (this.type != ParamType.BOOL) { throw 'Not a boolean' }
+        if (this.type != ParameterType.BOOL) { throw 'Not a boolean' }
         return this.baseValue as boolean
     }
 
     getValueAsEnum(): BigInt {
-        if (this.type != ParamType.ENUM) { throw 'Not an enum' }
+        if (this.type != ParameterType.ENUM) { throw 'Not an enum' }
         return this.baseValue as BigInt
     }
 
     getValueAsFlags(): BigInt {
-        if (this.type != ParamType.FLAGS) { throw 'Not a flag' }
+        if (this.type != ParameterType.FLAGS) { throw 'Not a flag' }
         return this.baseValue as BigInt
 
     }
 
     getValueAsString(): string {
-        if (this.type != ParamType.STRING) { throw 'Not a string' }
+        if (this.type != ParameterType.STRING) { throw 'Not a string' }
         return this.baseValue as string
     }
 
     getValueAsFloat(): number {
-        if (this.type != ParamType.FLOAT) { throw 'Not a float' }
+        if (this.type != ParameterType.FLOAT) { throw 'Not a float' }
         return this.baseValue as number
     }
 
     getValueAsFXY(): Type.FXY {
-        if (this.type != ParamType.FXY) { throw 'Not a matrix' }
+        if (this.type != ParameterType.FXY) { throw 'Not a matrix' }
         return this.baseValue as Type.FXY
     }
 
     getValueAsFXYZ(): Type.FXYZ {
-        if (this.type != ParamType.FXYZ) { throw 'Not a matrix' }
+        if (this.type != ParameterType.FXYZ) { throw 'Not a matrix' }
         return this.baseValue as Type.FXYZ
     }
 
     getValueAsFXYZW(): Type.FXYZW {
-        if (this.type != ParamType.FXYZW) { throw 'Not a matrix' }
+        if (this.type != ParameterType.FXYZW) { throw 'Not a matrix' }
         return this.baseValue as Type.FXYZW
     }
 
     getValueAsInt(): number {
-        if (this.type != ParamType.INT) { throw 'Not an integer' }
+        if (this.type != ParameterType.INT) { throw 'Not an integer' }
         return this.baseValue as number
     }
 
     getValueAsIXY(): Type.IXY {
-        if (this.type != ParamType.IXY) { throw 'Not a matrix' }
+        if (this.type != ParameterType.IXY) { throw 'Not a matrix' }
         return this.baseValue as Type.IXY
     }
 
     getValueAsIXYZ(): Type.IXYZ {
-        if (this.type != ParamType.IXYZ) { throw 'Not a matrix' }
+        if (this.type != ParameterType.IXYZ) { throw 'Not a matrix' }
         return this.baseValue as Type.IXYZ
     }
 
     getValueAsIXYZW(): Type.IXYZW {
-        if (this.type != ParamType.IXYZW) { throw 'Not a matrix' }
+        if (this.type != ParameterType.IXYZW) { throw 'Not a matrix' }
         return this.baseValue as Type.IXYZW
     }
 

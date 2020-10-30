@@ -15,7 +15,7 @@
 import { Point } from '@svgdotjs/svg.js'
 
 import { Connection } from './Connection'
-import { BaseNode, makeUUID, NodeData, NodeDataModel, NodeDataType } from './NodeData'
+import { BaseNode, NodeData, NodeDataModel, NodeDataType } from './NodeData'
 import { NodeGeometry } from './NodeGeometry'
 import { NodeGraphicsObject } from './NodeGraphicsObject'
 import { NodeState, NodeConnectionReaction } from './NodeState'
@@ -32,6 +32,7 @@ export class Node extends BaseNode {
         this.nodeState = new NodeState(nodeDataModel)
         this._nodeGeometry = new NodeGeometry(this.nodeDataModel)
         this._nodeGeometry.recalculateSize()
+
 
         //     // propagate data: model => node
         // connect(_nodeDataModel.get(),
@@ -71,7 +72,7 @@ export class Node extends BaseNode {
     onDataUpdated(port: PortIndex) {
 
         const nodeData = this.nodeDataModel.outData(port)
-        const connections = this._nodeState.connections(PortType.Out, port)
+        const connections = this.nodeState.connections(PortType.Out, port)
         connections.forEach((value: Connection, _: string) => {
             value.propagateData(nodeData)
         })

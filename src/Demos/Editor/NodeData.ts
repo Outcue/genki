@@ -12,13 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import * as Type from './NodeTypes'
+
 import { NodeStyle } from './NodeStyle'
-import { Parameter } from './Parameter'
+import { Parameter, ParameterType } from './Parameter'
 import { PortIndex, PortType } from './PortType'
 
 export class NodeDataType {
-    id = ""
-    name = ""
+
+    constructor(
+        readonly id: string,
+        readonly name: string) {
+    }
 }
 
 export const enum NodeClass {
@@ -35,11 +40,15 @@ export const enum NodeClass {
 }
 
 /// Class represents data transferred between nodes.
-/// @param type is used for comparing the types
+/// type is used for comparing the types
 /// The actual data is stored in subtypes
 export class NodeData {
 
     private _type: NodeDataType
+
+    constructor(id: string, name: string) {
+        this._type = new NodeDataType(id, name)
+    }
 
     type(): NodeDataType {
         return this._type
@@ -110,24 +119,28 @@ export function staticImplements<T>() {
 @staticImplements<NodeDataModelStatic>()
 export class BaseNode implements NodeDataModel {
 
-    private _id = makeUUID()
+    readonly id = makeUUID()
+
     private _inputs = new Array<Port>()
     private _outputs = new Array<Port>()
     private _parameters = new Array<Parameter>()
+    private _nodeStyle = new NodeStyle()
 
-    public static Name(): string {
-        return ""
+    static Name(): string {
+        return "Unknown Name"
     }
 
-    public static Type(): string {
-        return ""
+    static Type(): string {
+        return "Unknown Type"
     }
+
     initialize(): void {
     }
 
     caption(): string {
-        const name = this.name().length <= 0 ? "" : " : " + this.name()
-        return this.type() + name;
+        const nodeName = BaseNode.Name()
+        const name = nodeName.length <= 0 ? "" : " : " + nodeName
+        return BaseNode.Type() + name;
     }
 
     captionVisible(): boolean {
@@ -176,12 +189,12 @@ export class BaseNode implements NodeDataModel {
                 return this._outputs[portIndex].dataType
 
             default:
-                return new NodeDataType()
+                return new NodeDataType(this.id, BaseNode.Name())
         }
     }
 
     outData(port: PortIndex): NodeData {
-        return new NodeData()
+        return new NodeData(this.id, BaseNode.Name())
     }
 
     setInData(nodeData: NodeData, index: PortIndex) {
@@ -202,15 +215,115 @@ export class BaseNode implements NodeDataModel {
 
     resizable(): boolean { return false }
 
-    getID(): string { return this._id }
-    setID(inId: string): void { this._id = inId }
-
     nodeStyle(): NodeStyle {
-        return new NodeStyle()
+        return this._nodeStyle
     }
 
-    // observable::subject < void (PortIndex) > dataUpdated;
+    // observable::subject < void (PortIndex) > dataUpdated
+
+    addParameter<T>(
+        type: ParameterType,
+        name: string,
+        min: number,
+        max: number,
+        value: T,
+        animatable: boolean,
+        group: string): void {
+
+        const p = new Parameter(
+            type,
+            name,
+            min,
+            max,
+            this,
+            group);
+        p.baseValue = value
+        p.isAnimatable = animatable
+        this._parameters.push(p)
+    }
+
+    ParamText(
+        name: string,
+        label: string,
+        group: string) {
+        this.addParameter<string>(
+            ParameterType.TEXT,
+            name,
+            0,
+            0,
+            label,
+            false,
+            group)
+    }
+
+    ParamString(
+        name: string,
+        label: string,
+        group: string) {
+        this.addParameter<string>(
+            ParameterType.STRING,
+            name,
+            0,
+            0,
+            label,
+            false,
+            group)
+    }
+
+    ParamInt(
+        name: string,
+        min: number,
+        max: number,
+        value: number,
+        animatable: boolean,
+        group: string) {
+        this.addParameter<number>(
+            ParameterType.INT,
+            name,
+            min,
+            max,
+            value,
+            animatable,
+            group)
+    }
+
+    ParamFloat(
+        name: string,
+        min: number,
+        max: number,
+        value: number,
+        animatable: boolean,
+        group: string) {
+        this.addParameter<number>(
+            ParameterType.FLOAT,
+            name,
+            min,
+            max,
+            value,
+            animatable,
+            group)
+    }
+
+    ParamFXY(
+        name: string,
+        min: number,
+        max: number,
+        x: number,
+        y: number,
+        animatable: boolean,
+        group: string) {
+        this.addParameter<number>(
+            ParameterType.FLOAT,
+            name,
+            min,
+            max,
+            new Type.FXY(x, y),
+            animatable,
+            group)
+    }
 }
+
+
 
 
 
