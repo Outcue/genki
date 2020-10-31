@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import { BaseNode } from './NodeData'
+
 import { DataModelRegistry } from './DataModelRegistry'
 
 const GroupAnimations = 'Animations'
@@ -21,6 +23,11 @@ const GroupFilters = 'Filters'
 const GroupAssets = ' Items'
 const GroupTransitions = 'Transitions'
 const GroupValues = 'Values'
+
+class TestNode extends BaseNode {
+
+    static readonly Name = "TestNode"
+}
 
 export class NodeRegistry {
 
@@ -37,7 +44,7 @@ export class NodeRegistry {
 
         const registry = new DataModelRegistry()
 
-        registry.registerModel(GroupAssets)
+        registry.registerModel(TestNode.Name, GroupAssets, () => { return new TestNode() })
 
         return registry
     }

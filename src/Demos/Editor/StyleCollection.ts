@@ -18,10 +18,9 @@ export class StyleCollection {
 
     private static _instance: StyleCollection
 
-    private _connectionStyle?: ConnectionStyle
-    private _nodeStyle?: NodeStyle
-    private _nodeViewStyle?: NodeViewStyle
-
+    private _connectionStyle = new ConnectionStyle()
+    private _nodeStyle = new NodeStyle()
+    private _nodeViewStyle = new NodeViewStyle()
 
     static get instance() {
         return this._instance || (this._instance = new this());
@@ -31,7 +30,7 @@ export class StyleCollection {
     }
 
     static get nodeStyle(): NodeStyle {
-        return StyleCollection.instance._nodeStyle;
+        return StyleCollection.instance._nodeStyle
     }
 
     static set nodeStyle(style: NodeStyle) {
@@ -39,7 +38,7 @@ export class StyleCollection {
     }
 
     static get connectionStyle() {
-        return StyleCollection.instance._connectionStyle;
+        return StyleCollection.instance._connectionStyle
     }
 
     static set connectionStyle(style: ConnectionStyle) {

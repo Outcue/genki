@@ -73,6 +73,7 @@ export const enum ConnectionPolicy {
 export interface NodeDataModel {
 
     initialize(): void
+    type(): string
     nPorts(portType: PortType): number
     dataType(portType: PortType, portIndex: PortIndex): NodeDataType
     outData(port: PortIndex): NodeData
@@ -84,12 +85,6 @@ export interface NodeDataModel {
     validationState(): NodeValidationState
     validationMessage(): string
     nodeStyle(): NodeStyle
-}
-
-interface NodeDataModelStatic {
-    new(): NodeDataModel
-    Name(): string
-    Type(): string
 }
 
 class Port {
@@ -116,31 +111,33 @@ export function staticImplements<T>() {
     return <U extends T>(constructor: U) => { constructor };
 }
 
-@staticImplements<NodeDataModelStatic>()
 export class BaseNode implements NodeDataModel {
 
     readonly id = makeUUID()
+
+    protected _name = "Unknown"
+    protected _type = "Unknown"
 
     private _inputs = new Array<Port>()
     private _outputs = new Array<Port>()
     private _parameters = new Array<Parameter>()
     private _nodeStyle = new NodeStyle()
 
-    static Name(): string {
-        return "Unknown Name"
-    }
-
-    static Type(): string {
-        return "Unknown Type"
-    }
-
     initialize(): void {
     }
 
+    name() {
+        return this._name
+    }
+
+    type() {
+        return this._type
+    }
+
     caption(): string {
-        const nodeName = BaseNode.Name()
+        const nodeName = this._name
         const name = nodeName.length <= 0 ? "" : " : " + nodeName
-        return BaseNode.Type() + name;
+        return this._type + name;
     }
 
     captionVisible(): boolean {
@@ -189,12 +186,12 @@ export class BaseNode implements NodeDataModel {
                 return this._outputs[portIndex].dataType
 
             default:
-                return new NodeDataType(this.id, BaseNode.Name())
+                return new NodeDataType(this.id, this._name)
         }
     }
 
     outData(port: PortIndex): NodeData {
-        return new NodeData(this.id, BaseNode.Name())
+        return new NodeData(this.id, this._name)
     }
 
     setInData(nodeData: NodeData, index: PortIndex) {
@@ -312,12 +309,51 @@ export class BaseNode implements NodeDataModel {
         y: number,
         animatable: boolean,
         group: string) {
-        this.addParameter<number>(
+        this.addParameter<Type.FXY>(
             ParameterType.FLOAT,
             name,
             min,
             max,
-            new Type.FXY(x, y),
+            new Type.XY<number>(x, y),
+            animatable,
+            group)
+    }
+
+    ParamFXYZ(
+        name: string,
+        min: number,
+        max: number,
+        x: number,
+        y: number,
+        z: number,
+        animatable: boolean,
+        group: string) {
+        this.addParameter<Type.FXYZ>(
+            ParameterType.FLOAT,
+            name,
+            min,
+            max,
+            new Type.XYZ<number>(x, y, z),
+            animatable,
+            group)
+    }
+
+    ParamFXYZW(
+        name: string,
+        min: number,
+        max: number,
+        x: number,
+        y: number,
+        z: number,
+        w: number,
+        animatable: boolean,
+        group: string) {
+        this.addParameter<Type.FXYZW>(
+            ParameterType.FLOAT,
+            name,
+            min,
+            max,
+            new Type.XYZW<number>(x, y, z, w),
             animatable,
             group)
     }

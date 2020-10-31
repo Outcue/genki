@@ -18,6 +18,7 @@ import { Connection } from './Connection'
 import { BaseNode, NodeData, NodeDataModel, NodeDataType } from './NodeData'
 import { NodeGeometry } from './NodeGeometry'
 import { NodeGraphicsObject } from './NodeGraphicsObject'
+import { NodeScene } from './NodeScene'
 import { NodeState, NodeConnectionReaction } from './NodeState'
 import { PortIndex, PortType } from './PortType'
 
@@ -25,14 +26,14 @@ export class Node extends BaseNode {
 
     readonly nodeState: NodeState
     private _nodeGeometry: NodeGeometry
-    private _nodeGraphicsObject?: NodeGraphicsObject
+    private _nodeGraphicsObject: NodeGraphicsObject
 
-    constructor(readonly nodeDataModel: NodeDataModel) {
+    constructor(readonly nodeDataModel: NodeDataModel, scene: NodeScene) {
         super()
         this.nodeState = new NodeState(nodeDataModel)
         this._nodeGeometry = new NodeGeometry(this.nodeDataModel)
         this._nodeGeometry.recalculateSize()
-
+        this._nodeGraphicsObject = new NodeGraphicsObject(this, scene)
 
         //     // propagate data: model => node
         // connect(_nodeDataModel.get(),
@@ -55,9 +56,8 @@ export class Node extends BaseNode {
         return this._nodeGeometry
     }
 
-    set nodeGraphicsObject(object: NodeGraphicsObject) {
-        this._nodeGraphicsObject = object
-
+    get nodeGraphicsObject() {
+        return this._nodeGraphicsObject
     }
 
     /// Propagates incoming data to the underlying model.

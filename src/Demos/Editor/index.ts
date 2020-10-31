@@ -12,15 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import { DataModelRegistry } from './DataModelRegistry'
+import { NodeRegistry } from './NodeRegistry'
 import { NodeScene } from './NodeScene'
 
+var registry: DataModelRegistry
 var scene: NodeScene
 
 window.onresize = () => {
 }
 
 window.onload = () => {
-    scene = new NodeScene()
+    registry = NodeRegistry.registerDataModels()
+    scene = new NodeScene(registry)
+    const type = registry.create("TestNode")
+    if (type) {
+        const node = scene.createNode(type)
+    }
 }
 
 

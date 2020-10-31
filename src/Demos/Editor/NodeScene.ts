@@ -18,7 +18,6 @@ import { Connection } from './Connection'
 import { DataModelRegistry } from './DataModelRegistry'
 import { Node } from './Node'
 import { NodeDataModel } from './NodeData'
-//import { NodeGraphicsObject } from './NodeGraphicsObject'
 import { PortIndex, PortType } from './PortType'
 
 // Scene holds connections and nodes
@@ -62,11 +61,11 @@ export class NodeScene {
     }
 
     createNode(dataModel: NodeDataModel): Node {
-        const node = new Node(dataModel)
+        const node = new Node(dataModel, this)
         this._nodes.set(node.id, node)
         node.nodeDataModel.initialize()
         this.nodeCreated(node)
-        //node.nodeGraphicsObject.collapse();
+        node.nodeGraphicsObject.collapse()
         return node
     }
 

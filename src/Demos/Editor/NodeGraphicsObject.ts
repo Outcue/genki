@@ -23,8 +23,8 @@ export class NodeGraphicsObject {
 
     private readonly shape?: Shape
 
-    private _locked = false
-    private _alternateFill = false
+    //private _locked = false
+    //private _alternateFill = false
 
     constructor(
         private node: Node,
@@ -45,12 +45,16 @@ export class NodeGraphicsObject {
 
         const geom = this.node.nodeGeometry
         const bounds = geom.boundingRect()
+        console.log(bounds)
         this.shape.x(bounds.x)
         this.shape.y(bounds.y)
         this.shape.width(bounds.width)
         this.shape.height(bounds.height)
 
-        this.scene.addItem(this)
+        //this.scene.addItem(this)
+    }
+
+    collapse() {
     }
 
     setOpacity(value: number): void {

@@ -28,21 +28,30 @@ export const F32_MIN = -F32_MAX
 export const F32_INF = 1e30
 export const ALMOST_ZERO = .00001
 
-class XY<T>
+export class XY<T>
 {
-    constructor(x: T, y: T) {
+    constructor(
+        readonly x: T,
+        readonly y: T) {
     }
 }
 
-class XYZ<T>
+export class XYZ<T>
 {
-    constructor(x: T, y: T, z: T) {
+    constructor(
+        readonly x: T,
+        readonly y: T,
+        readonly z: T) {
     }
 }
 
-class XYZW<T>
+export class XYZW<T>
 {
-    constructor(x: T, y: T, z: T, w: T) {
+    constructor(
+        readonly x: T,
+        readonly y: T,
+        readonly z: T,
+        readonly w: T) {
     }
 }
 

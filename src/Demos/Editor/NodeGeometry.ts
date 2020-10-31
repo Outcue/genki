@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Point } from '@svgdotjs/svg.js'
+//import { Point } from '@svgdotjs/svg.js'
 
 import { NodeDataModel, NodeValidationState } from './NodeData'
 import { PortType } from './PortType'
@@ -24,16 +24,17 @@ const vPad2X = vPad * 2
 const NodeMinWidth = 100
 
 class FontMetrics {
+
     width(value: string): number {
-        return 0
+        return 100
     }
 
     height(): number {
-        return 0
+        return 100
     }
 
     boundingRect(value: string): Rect {
-        return new Rect()
+        return new Rect(0, 0, 100, 100)
     }
 }
 
@@ -41,16 +42,16 @@ export class NodeGeometry {
 
     private _width = 100
     private _height = 150
-    private _entryWidth = 20
+    //private _entryWidth = 20
     private _entryHeight = 80
     private _inputPortWidth = 70
     private _outputPortWidth = 70
     private _spacing = 10
 
-    private _hovered = false
+    //private _hovered = false
     private _expanded = true
 
-    private _draggingPos = new Point(-1000, -1000)
+    //private _draggingPos = new Point(-1000, -1000)
 
     private _nSources: number
     private _nSinks: number
@@ -107,7 +108,7 @@ export class NodeGeometry {
         }
 
         const name = this._dataModel.caption()
-        return this._boldFontMetrics.boundingRect(name).height()
+        return this._boldFontMetrics.boundingRect(name).height
     }
 
     private captionWidth(): number {
@@ -117,7 +118,7 @@ export class NodeGeometry {
 
         const name = this._dataModel.caption()
         const bounds = this._boldFontMetrics.boundingRect(name)
-        return bounds.width()
+        return bounds.width
     }
 
 
@@ -143,11 +144,11 @@ export class NodeGeometry {
 
     private validationHeight(): number {
         const msg = this._dataModel.validationMessage()
-        return this._boldFontMetrics.boundingRect(msg).height()
+        return this._boldFontMetrics.boundingRect(msg).height
     }
 
     private validationWidth(): number {
         const msg = this._dataModel.validationMessage()
-        return this._boldFontMetrics.boundingRect(msg).width()
+        return this._boldFontMetrics.boundingRect(msg).width
     }
 }

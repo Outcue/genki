@@ -34,10 +34,10 @@ export class DataModelRegistry {
         return null
     }
 
-    registerModel<T>(category: string = "Nodes"): void {
-
-        const exemplar = creator()
-        const name = exemplar.name()
+    registerModel(
+        name: string,
+        category: string,
+        creator: NodeDataCreator): void {
 
         if (this._registeredItemCreators.has(name)) {
             console.warn('Model already registered: ', name)
