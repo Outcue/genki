@@ -18,7 +18,7 @@ import { PortIndex, PortType } from './PortType'
 
 type ConnectionSet = Map<string, Connection>
 
-const DefaultDataType = new NodeDataType()
+const DefaultDataType = new NodeDataType("Default", "Default")
 
 export const enum NodeConnectionReaction {
     Reacting,

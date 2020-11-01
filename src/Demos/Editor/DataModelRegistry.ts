@@ -14,9 +14,17 @@
 
 import { NodeDataModel } from './NodeData'
 
-export type NodeDataCreator = () => NodeDataModel
+class NodeDataCreator {
 
-export class RegistryItemCreator {
+    constructor(private type: any) {
+    }
+
+    getNew() {
+        return new this.type();
+    }
+}
+export function NodeCreator(type: any) {
+    return new NodeDataCreator(type)
 }
 
 export class DataModelRegistry {
@@ -26,9 +34,10 @@ export class DataModelRegistry {
     private _registeredModelsCategory = new Map<string, string>()
 
     create(modelName: string): NodeDataModel | null {
+        debugger
         const creator = this._registeredItemCreators.get(modelName)
         if (creator != undefined) {
-            return creator()
+            return creator.getNew()
         }
 
         return null
@@ -36,8 +45,8 @@ export class DataModelRegistry {
 
     registerModel(
         name: string,
-        category: string,
-        creator: NodeDataCreator): void {
+        creator: NodeDataCreator,
+        category: string): void {
 
         if (this._registeredItemCreators.has(name)) {
             console.warn('Model already registered: ', name)

@@ -15,7 +15,7 @@
 import { Point } from '@svgdotjs/svg.js'
 
 import { Connection } from './Connection'
-import { BaseNode, NodeData, NodeDataModel, NodeDataType } from './NodeData'
+import { BaseNode, NodeData, NodeDataType } from './NodeData'
 import { NodeGeometry } from './NodeGeometry'
 import { NodeGraphicsObject } from './NodeGraphicsObject'
 import { NodeScene } from './NodeScene'
@@ -26,14 +26,13 @@ export class Node extends BaseNode {
 
     readonly nodeState: NodeState
     private _nodeGeometry: NodeGeometry
-    private _nodeGraphicsObject: NodeGraphicsObject
+    private _nodeGraphicsObject?: NodeGraphicsObject
 
-    constructor(readonly nodeDataModel: NodeDataModel, scene: NodeScene) {
+    constructor() {
         super()
-        this.nodeState = new NodeState(nodeDataModel)
-        this._nodeGeometry = new NodeGeometry(this.nodeDataModel)
+        this.nodeState = new NodeState(this)
+        this._nodeGeometry = new NodeGeometry(this)
         this._nodeGeometry.recalculateSize()
-        this._nodeGraphicsObject = new NodeGraphicsObject(this, scene)
 
         //     // propagate data: model => node
         // connect(_nodeDataModel.get(),
@@ -60,10 +59,14 @@ export class Node extends BaseNode {
         return this._nodeGraphicsObject
     }
 
+    addedToScene(scene: NodeScene) {
+        this._nodeGraphicsObject = new NodeGraphicsObject(this, scene)
+    }
+
     /// Propagates incoming data to the underlying model.
     propagateData(nodeData: NodeData, index: PortIndex): void {
 
-        this.nodeDataModel.setInData(nodeData, index)
+        this.setInData(nodeData, index)
         this.updateVisuals()
     }
 
@@ -71,7 +74,7 @@ export class Node extends BaseNode {
     /// and propagates it to the connection
     onDataUpdated(port: PortIndex) {
 
-        const nodeData = this.nodeDataModel.outData(port)
+        const nodeData = this.outData(port)
         const connections = this.nodeState.connections(PortType.Out, port)
         connections.forEach((value: Connection, _: string) => {
             value.propagateData(nodeData)
@@ -97,7 +100,8 @@ export class Node extends BaseNode {
 
     resetReactionToConnection() {
         this.nodeState.setReaction(NodeConnectionReaction.NotReacting)
-        this.nodeGraphicsObject.update()
+        if (this.nodeGraphicsObject) {
+            this.nodeGraphicsObject.update()
+        }
     }
-
 }

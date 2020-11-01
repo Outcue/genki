@@ -16,13 +16,25 @@ import { Color } from '@svgdotjs/svg.js'
 
 import { Node } from './Node'
 import { NodeDataModel } from './NodeData'
+import { NodeScene } from './NodeScene'
 
 
 export class ValueBaseNode extends Node {
 
-    constructor(readonly nodeDataModel: NodeDataModel) {
-        super(nodeDataModel)
+    constructor(readonly nodeDataModel: NodeDataModel, scene: NodeScene) {
+        super(nodeDataModel, scene)
 
         this.nodeStyle().FillColor = new Color(63, 89, 85, 255, 'rgb')
+    }
+}
+
+export class ValueNode extends ValueBaseNode {
+
+    static readonly Name = "Value"
+
+    constructor(readonly nodeDataModel: NodeDataModel, scene: NodeScene) {
+        super(nodeDataModel, scene)
+        this._name = ValueNode.Name
+        this._type = ValueNode.Name
     }
 }

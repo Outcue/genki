@@ -26,7 +26,7 @@ export class NodeScene {
     readonly context = SVG()
 
     private _connections = new Map<string, Connection>()
-    private _nodes = new Map<string, Node>()
+    private _nodes = new Map<string, NodeDataModel>()
 
     constructor(readonly registry: DataModelRegistry) {
 
@@ -60,12 +60,11 @@ export class NodeScene {
         this._connections.delete(connection.id)
     }
 
-    createNode(dataModel: NodeDataModel): Node {
-        const node = new Node(dataModel, this)
-        this._nodes.set(node.id, node)
-        node.nodeDataModel.initialize()
+    addNode(node: NodeDataModel): NodeDataModel {
+        this._nodes.set(node.id(), node)
+        node.initialize()
         this.nodeCreated(node)
-        node.nodeGraphicsObject.collapse()
+        //node.nodeGraphicsObject.collapse()
         return node
     }
 
@@ -77,7 +76,7 @@ export class NodeScene {
         // TODO: signal?
     }
 
-    nodeCreated(node: Node) {
+    nodeCreated(node: NodeDataModel) {
         // TODO: signal?
     }
 }

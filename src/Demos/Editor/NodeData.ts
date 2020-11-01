@@ -74,6 +74,7 @@ export interface NodeDataModel {
 
     initialize(): void
     type(): string
+    id(): string
     nPorts(portType: PortType): number
     dataType(portType: PortType, portIndex: PortIndex): NodeDataType
     outData(port: PortIndex): NodeData
@@ -113,7 +114,7 @@ export function staticImplements<T>() {
 
 export class BaseNode implements NodeDataModel {
 
-    readonly id = makeUUID()
+    private _id = makeUUID()
 
     protected _name = "Unknown"
     protected _type = "Unknown"
@@ -124,6 +125,10 @@ export class BaseNode implements NodeDataModel {
     private _nodeStyle = new NodeStyle()
 
     initialize(): void {
+    }
+
+    id(): string {
+        return this._id
     }
 
     name() {
@@ -186,12 +191,12 @@ export class BaseNode implements NodeDataModel {
                 return this._outputs[portIndex].dataType
 
             default:
-                return new NodeDataType(this.id, this._name)
+                return new NodeDataType(this._id, this._name)
         }
     }
 
     outData(port: PortIndex): NodeData {
-        return new NodeData(this.id, this._name)
+        return new NodeData(this._id, this._name)
     }
 
     setInData(nodeData: NodeData, index: PortIndex) {
