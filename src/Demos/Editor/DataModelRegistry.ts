@@ -34,12 +34,10 @@ export class DataModelRegistry {
     private _registeredModelsCategory = new Map<string, string>()
 
     create(modelName: string): NodeDataModel | null {
-        debugger
         const creator = this._registeredItemCreators.get(modelName)
         if (creator != undefined) {
             return creator.getNew()
         }
-
         return null
     }
 

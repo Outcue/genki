@@ -15,7 +15,7 @@ export class ButtonView extends View<ButtonView> {
     protected readonly _label: TextSvg
     protected readonly _box: RectSvg
 
-    private _font: Font
+    private _font?: Font
     private _margin = 10.0
 
     constructor(title: string, action: ButtonAction)

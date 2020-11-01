@@ -159,18 +159,18 @@ export class Connection {
     dataType(portType: PortType): NodeDataType {
         if (this._inNode && this._outNode) {
             const isPortIn = portType == PortType.In
-            const model = isPortIn ? this._inNode.nodeDataModel : this._outNode.nodeDataModel
+            const model = isPortIn ? this._inNode : this._outNode
             const index = isPortIn ? this._inPortIndex : this._outPortIndex
             return model.dataType(portType, index)
         } else {
             if (this._inNode) {
                 portType = PortType.In
-                return this._inNode.nodeDataModel.dataType(
+                return this._inNode.dataType(
                     portType,
                     this._inPortIndex)
             } else if (this._outNode) {
                 portType = PortType.Out
-                return this._outNode.nodeDataModel.dataType(
+                return this._outNode.dataType(
                     portType,
                     this._outPortIndex)
             } else {

@@ -102,6 +102,33 @@ export class NodeGeometry {
         }
     }
 
+    toggle() {
+        this._expanded = !this._expanded
+
+        //    if (_dataModel->parameterWidget()) {
+        //        _dataModel->parameterWidget()->setVisible(_expanded);
+        //        if (!_expanded) {
+        //            _dataModel->parameterWidget()->collapse();
+        //        }
+        //    }
+
+        this.recalculateSize()
+    }
+
+    expand() {
+        if (this._expanded) {
+            return;
+        }
+        this.toggle()
+    }
+
+    collapse() {
+        if (!this._expanded) {
+            return
+        }
+        this.toggle()
+    }
+
     private captionHeight(): number {
         if (!this._dataModel.captionVisible()) {
             return 0

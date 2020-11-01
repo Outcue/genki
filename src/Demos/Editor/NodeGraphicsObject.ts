@@ -12,16 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Shape } from '@svgdotjs/svg.js'
 import '@svgdotjs/svg.draggable.js'
+import "@svgdotjs/svg.filter.js"
+
+import { Filter, Rect as RectSVG } from '@svgdotjs/svg.js'
 
 import { Node } from './Node'
 import { NodeScene } from './NodeScene'
 import { Rect } from './NodeTypes'
 
+const Radius = 3.0
+
 export class NodeGraphicsObject {
 
-    private readonly shape?: Shape
+    private readonly shape: RectSVG
+    private _shadowFilter?: Filter
 
     //private _locked = false
     //private _alternateFill = false
@@ -33,7 +38,7 @@ export class NodeGraphicsObject {
         this.shape = this.scene.context.rect()
         this.shape.draggable()
 
-        const nodeStyle = this.node.nodeDataModel.nodeStyle()
+        const nodeStyle = this.node.nodeStyle()
         this.setOpacity(nodeStyle.Opacity)
         this.setAcceptHoverEvents(true)
         this.setZValue(0)
@@ -43,18 +48,26 @@ export class NodeGraphicsObject {
             opacity: nodeStyle.Opacity
         })
 
-        const geom = this.node.nodeGeometry
-        const bounds = geom.boundingRect()
-        console.log(bounds)
-        this.shape.x(bounds.x)
-        this.shape.y(bounds.y)
-        this.shape.width(bounds.width)
-        this.shape.height(bounds.height)
+        this.shape.radius(Radius)
+
+        this.shape.filterWith((add: Filter) => {
+            const effect = add.flood(nodeStyle.ShadowColor.toString(), .33)
+                .composite(add.$source, 'in')
+                .gaussianBlur(Radius, Radius)
+                .offset(2, 2)
+            add.blend(add.$source, effect, "")
+            this._shadowFilter = add
+        })
+
+        this.update()
 
         //this.scene.addItem(this)
     }
 
     collapse() {
+        const geom = this.node.nodeGeometry
+        geom.collapse()
+        this.update()
     }
 
     setOpacity(value: number): void {
@@ -70,7 +83,13 @@ export class NodeGraphicsObject {
         return this.node.nodeGeometry.boundingRect()
     }
 
-    update() {
+    private update() {
+        const geom = this.node.nodeGeometry
+        const bounds = geom.boundingRect()
+        console.log(bounds)
+        this.shape.x(bounds.x)
+        this.shape.y(bounds.y)
+        this.shape.width(bounds.width)
+        this.shape.height(bounds.height)
     }
-
 }

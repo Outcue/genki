@@ -14,6 +14,7 @@
 
 import * as Type from './NodeTypes'
 
+import { NodeScene } from './NodeScene'
 import { NodeStyle } from './NodeStyle'
 import { Parameter, ParameterType } from './Parameter'
 import { PortIndex, PortType } from './PortType'
@@ -72,7 +73,7 @@ export const enum ConnectionPolicy {
 
 export interface NodeDataModel {
 
-    initialize(): void
+    initialize(scene: NodeScene): void
     type(): string
     id(): string
     nPorts(portType: PortType): number
@@ -124,7 +125,7 @@ export class BaseNode implements NodeDataModel {
     private _parameters = new Array<Parameter>()
     private _nodeStyle = new NodeStyle()
 
-    initialize(): void {
+    initialize(scene:): void {
     }
 
     id(): string {

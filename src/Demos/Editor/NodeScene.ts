@@ -62,9 +62,8 @@ export class NodeScene {
 
     addNode(node: NodeDataModel): NodeDataModel {
         this._nodes.set(node.id(), node)
-        node.initialize()
+        node.initialize(this)
         this.nodeCreated(node)
-        //node.nodeGraphicsObject.collapse()
         return node
     }
 

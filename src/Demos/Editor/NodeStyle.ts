@@ -63,5 +63,4 @@ export class NodeViewStyle implements NodeStyleBase {
 
     loadJsonFile(fileName: string): void {
     }
-
 }

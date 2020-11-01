@@ -59,6 +59,11 @@ export class Node extends BaseNode {
         return this._nodeGraphicsObject
     }
 
+    initialize(scene: NodeScene): void {
+        this._nodeGraphicsObject = new NodeGraphicsObject(this, scene)
+        this._nodeGraphicsObject.collapse()
+    }
+
     addedToScene(scene: NodeScene) {
         this._nodeGraphicsObject = new NodeGraphicsObject(this, scene)
     }
