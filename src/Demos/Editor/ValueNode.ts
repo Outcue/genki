@@ -14,27 +14,40 @@
 
 import { Color } from '@svgdotjs/svg.js'
 
-import { Node } from './Node'
-import { NodeDataModel } from './NodeData'
-import { NodeScene } from './NodeScene'
+import * as Type from './NodeTypes'
 
+import { Node } from './Node'
+import { NodeClass } from './NodeData'
+import { NodeKeys } from './NodeKeys'
 
 export class ValueBaseNode extends Node {
 
-    constructor(readonly nodeDataModel: NodeDataModel, scene: NodeScene) {
-        super(nodeDataModel, scene)
-
+    constructor() {
+        super()
         this.nodeStyle().FillColor = new Color(63, 89, 85, 255, 'rgb')
     }
 }
+
 
 export class ValueNode extends ValueBaseNode {
 
     static readonly Name = "Value"
 
-    constructor(readonly nodeDataModel: NodeDataModel, scene: NodeScene) {
-        super(nodeDataModel, scene)
+    private static DefaultValue = 1.0;
+
+    constructor() {
+        super()
+
         this._name = ValueNode.Name
         this._type = ValueNode.Name
+
+        this.OutPort(NodeClass.Scalar, NodeKeys.Value);
+
+        this.ParamFloat(NodeKeys.Value,
+            -Type.F32_MAX,
+            Type.F32_MAX,
+            ValueNode.DefaultValue,
+            false,
+            NodeKeys.GroupNone)
     }
 }

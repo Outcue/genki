@@ -64,9 +64,19 @@ export class NodeGraphicsObject {
         //this.scene.addItem(this)
     }
 
+    remove() {
+        if (this._shadowFilter) {
+            this._shadowFilter.remove()
+        }
+
+        if (this.shape) {
+            this.shape.unfilter()
+            this.shape.remove()
+        }
+    }
+
     collapse() {
-        const geom = this.node.nodeGeometry
-        geom.collapse()
+        this.node.nodeGeometry.collapse()
         this.update()
     }
 
@@ -83,7 +93,7 @@ export class NodeGraphicsObject {
         return this.node.nodeGeometry.boundingRect()
     }
 
-    private update() {
+    update() {
         const geom = this.node.nodeGeometry
         const bounds = geom.boundingRect()
         console.log(bounds)

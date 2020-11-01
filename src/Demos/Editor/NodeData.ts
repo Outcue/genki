@@ -20,12 +20,24 @@ import { Parameter, ParameterType } from './Parameter'
 import { PortIndex, PortType } from './PortType'
 
 export class NodeDataType {
-
     constructor(
         readonly id: string,
         readonly name: string) {
     }
 }
+
+export const NODE_DATA_TYPE: NodeDataType[] = [
+    { id: "animation", name: "animation" },
+    { id: "color", name: "color" },
+    { id: "effect", name: "effect" },
+    { id: "filter", name: "filter" },
+    { id: "item", name: "item" },
+    { id: "int", name: "int" },
+    { id: "path", name: "path" },
+    { id: "scalar", name: "scalar" },
+    { id: "scalar_2d", name: "scalar_2d" },
+    { id: "transition", name: "transition" }
+]
 
 export const enum NodeClass {
     Animation,
@@ -125,7 +137,7 @@ export class BaseNode implements NodeDataModel {
     private _parameters = new Array<Parameter>()
     private _nodeStyle = new NodeStyle()
 
-    initialize(scene:): void {
+    initialize(_: NodeScene): void {
     }
 
     id(): string {
@@ -223,6 +235,23 @@ export class BaseNode implements NodeDataModel {
     }
 
     // observable::subject < void (PortIndex) > dataUpdated
+
+    InPort(datatype: NodeClass, label: string) {
+        this._inputs.push(
+            new Port(PortType.In,
+                NODE_DATA_TYPE[datatype],
+                label,
+                datatype))
+    }
+
+
+    OutPort(datatype: NodeClass, label: string) {
+        this._outputs.push(
+            new Port(PortType.Out,
+                NODE_DATA_TYPE[datatype],
+                label,
+                datatype))
+    }
 
     addParameter<T>(
         type: ParameterType,
