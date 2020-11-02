@@ -15,16 +15,26 @@
 import '@svgdotjs/svg.draggable.js'
 import "@svgdotjs/svg.filter.js"
 
-import { Filter, Rect as RectSVG } from '@svgdotjs/svg.js'
+import { Filter, G, Rect as RectSVG } from '@svgdotjs/svg.js'
 
 import { Node } from './Node'
 import { NodeScene } from './NodeScene'
+import { PortType } from './PortType'
 import { Rect } from './NodeTypes'
+import { StyleCollection } from './StyleCollection'
 
-const Radius = 3.0
+
+const BlurRadius = 3.0
+const Check = 32
+const CheckH = Check / 2
+const CornerRadius = 3.0
+const LabelSize = 12
+const Lightness = 115
+const TitleSize = 12
 
 export class NodeGraphicsObject {
 
+    private readonly group: G
     private readonly shape: RectSVG
     private _shadowFilter?: Filter
 
@@ -32,32 +42,38 @@ export class NodeGraphicsObject {
     //private _alternateFill = false
 
     constructor(
+
         private node: Node,
         private scene: NodeScene) {
 
-        this.shape = this.scene.context.rect()
-        this.shape.draggable()
+        this.group = this.scene.context.group()
+        this.group.draggable()
+
+        this.shape = this.group.rect()
 
         const nodeStyle = this.node.nodeStyle()
         this.setOpacity(nodeStyle.Opacity)
         this.setAcceptHoverEvents(true)
         this.setZValue(0)
 
+        // Create body
         this.shape.attr({
             fill: nodeStyle.FillColor.toString(),
             opacity: nodeStyle.Opacity
         })
 
-        this.shape.radius(Radius)
+        this.shape.radius(CornerRadius)
 
         this.shape.filterWith((add: Filter) => {
             const effect = add.flood(nodeStyle.ShadowColor.toString(), .33)
                 .composite(add.$source, 'in')
-                .gaussianBlur(Radius, Radius)
+                .gaussianBlur(BlurRadius, BlurRadius)
                 .offset(2, 2)
             add.blend(add.$source, effect, "")
             this._shadowFilter = add
         })
+
+        this.addConnectionPoints()
 
         this.update()
 
@@ -90,16 +106,95 @@ export class NodeGraphicsObject {
     }
 
     boundingRect(): Rect {
-        return this.node.nodeGeometry.boundingRect()
+        return this.node.nodeGeometry.boundingRect(
+        )
     }
 
-    update() {
+    private addConnectionPoints() {
+
         const geom = this.node.nodeGeometry
-        const bounds = geom.boundingRect()
-        console.log(bounds)
-        this.shape.x(bounds.x)
-        this.shape.y(bounds.y)
-        this.shape.width(bounds.width)
-        this.shape.height(bounds.height)
+        const state = this.node.nodeState
+        const nodeStyle = this.node.nodeStyle()
+        const connectionStyle = StyleCollection.connectionStyle
+
+        const diameter = nodeStyle.ConnectionPointDiameter
+        var reducedDiameter = diameter * 0.6
+
+        for (const portType of [PortType.Out, PortType.In]) {
+
+            const n = state.getEntries(portType).length
+
+            for (var i = 0; i < n; ++i) {
+
+                var p = geom.portScenePosition(i, portType)
+                const dataType = node.dataType(portType, i)
+            }
+
+            /*
+            for (PortType portType: { PortType:: Out, PortType:: In }) {
+                size_t n = state.getEntries(portType).size();
+    
+                for (unsigned int i = 0; i < n; ++i)
+                {
+                    QPointF p = geom.portScenePosition(i, portType);
+    
+                    const auto& dataType = model -> dataType(portType, i);
+    
+                    bool canConnect = (state.getEntries(portType)[i].empty() ||
+                        (portType == PortType:: Out &&
+                            model -> portOutConnectionPolicy(i) == NodeDataModel:: ConnectionPolicy:: Many) );
+    
+                    double r = 1.0;
+                    if (state.isReacting() && canConnect && portType == state.reactingPortType()) {
+    
+                        auto   diff = geom.draggingPos() - p;
+                        double dist = std:: sqrt(QPointF:: dotProduct(diff, diff));
+                        bool   typeConvertable = false;
+    
+                        {
+                            if (portType == PortType:: In)
+                            {
+                                typeConvertable = scene.registry().getTypeConverter(state.reactingDataType(), dataType) != nullptr;
+                            }
+                        else {
+                                typeConvertable = scene.registry().getTypeConverter(dataType, state.reactingDataType()) != nullptr;
+                            }
+                        }
+    
+                        if (state.reactingDataType().id == dataType.id || typeConvertable) {
+                            const double thres = 40.0;
+                            r = (dist < thres) ?
+                                (2.0 - dist / thres) :
+                                1.0;
+                        }
+                        else {
+                            const double thres = 80.0;
+                            r = (dist < thres) ?
+                                (dist / thres) :
+                                1.0;
+                        }
+                    }
+    
+                    if (connectionStyle.useDataDefinedColors()) {
+                        painter -> setBrush(connectionStyle.normalColor(dataType.id));
+                    } else {
+                        painter -> setBrush(nodeStyle.ConnectionPointColor);
+                    }
+    
+                    painter -> drawEllipse(p,
+                        reducedDiameter * r,
+                        reducedDiameter * r);
+                }
+            }
+            */
+        }
+
+        update() {
+            const geom = this.node.nodeGeometry
+            const bounds = geom.boundingRect()
+            this.shape.x(bounds.x)
+            this.shape.y(bounds.y)
+            this.shape.width(bounds.width)
+            this.shape.height(bounds.height)
+        }
     }
-}

@@ -11,10 +11,10 @@ import { FrameData, FrameDataDefaults, } from '../../Types/Types'
 import { Font } from "../../Types/Font"
 import { View } from '../View'
 
-export class TextInfo {
-    codepoint: number
-    modifiers: number
-}
+// export class TextInfo {
+//     codepoint: number
+//     modifiers: number
+// }
 
 export class TextView extends View<TextView> {
 
@@ -22,12 +22,12 @@ export class TextView extends View<TextView> {
     private readonly _text: TextSvg
     private readonly _box: RectSvg
 
-    private _font: Font
+    private _font: Font | undefined
     private _underline = false
     private _linethrough = false
     private _color = Color.black
 
-    protected _floodFilter: Filter
+    protected _floodFilter?: Filter
 
     constructor(text: StateValue<string>)
     constructor(text: string)
@@ -100,7 +100,7 @@ export class TextView extends View<TextView> {
 
         this.element.filterWith((add: Filter) => {
             const flood = add.flood(color.toString(), color.a)
-            add.composite(add.$source, flood, null)
+            add.composite(add.$source, flood, "")
             this._floodFilter = add
         })
     }

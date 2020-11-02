@@ -71,37 +71,35 @@ export abstract class AnyView extends Identifiable {
 
     private _parent?: AnyView
 
-    constructor(readonly element?: Element) {
+    constructor(readonly element: Element) {
 
         super()
 
-        if (element) {
-            element.attr({
-                'id': this.id
-            })
+        element.attr({
+            'id': this.id
+        })
 
-            const options = {
-                root: document.documentElement
-            }
+        const options = {
+            root: document.documentElement
+        }
 
-            this._intersector = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.intersectionRatio > 0) {
-                        if (this.appearAction) {
-                            this.appearAction()
-                        }
-                    } else {
-                        if (this.disappearAction) {
-                            this.disappearAction()
-                        }
+        this._intersector = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.intersectionRatio > 0) {
+                    if (this.appearAction) {
+                        this.appearAction()
                     }
-                })
-            }, options)
+                } else {
+                    if (this.disappearAction) {
+                        this.disappearAction()
+                    }
+                }
+            })
+        }, options)
 
-            const foundElement = document.getElementById(this.id)
-            if (foundElement) {
-                this._intersector.observe(foundElement)
-            }
+        const foundElement = document.getElementById(this.id)
+        if (foundElement) {
+            this._intersector.observe(foundElement)
         }
     }
 
@@ -346,7 +344,7 @@ export interface EmptyView extends ProxyView {
 class _EmptyViewImpl extends ProxyView {
 }
 export function EmptyView() {
-    return new _EmptyViewImpl()
+    return new _EmptyViewImpl(View.Context.rect())
 }
 
 // A visible view that is contained by a layout
