@@ -59,19 +59,25 @@ export class NodeGraphicsObject {
         // Create body
         this.shape.attr({
             fill: nodeStyle.FillColor.toString(),
-            opacity: nodeStyle.Opacity
+            opacity: nodeStyle.Opacity,
+        })
+
+        this.shape.stroke({
+            color: nodeStyle.SelectedBoundaryColor.toString(),
+            opacity: 1.0,
+            width: nodeStyle.PenWidth
         })
 
         this.shape.radius(CornerRadius)
 
-        this.shape.filterWith((add: Filter) => {
-            const effect = add.flood(nodeStyle.ShadowColor.toString(), .33)
-                .composite(add.$source, 'in')
-                .gaussianBlur(BlurRadius, BlurRadius)
-                .offset(2, 2)
-            add.blend(add.$source, effect, "")
-            this._shadowFilter = add
-        })
+        // this.shape.filterWith((add: Filter) => {
+        //     const effect = add.flood(nodeStyle.ShadowColor.toString(), .33)
+        //         .composite(add.$source, 'in')
+        //         .gaussianBlur(BlurRadius, BlurRadius)
+        //         .offset(2, 2)
+        //     add.blend(add.$source, effect, "")
+        //     this._shadowFilter = add
+        // })
 
         this.addConnectionPoints()
 
@@ -175,7 +181,7 @@ export class NodeGraphicsObject {
                     //painter -> setBrush(nodeStyle.ConnectionPointColor);
                 }
 
-                const connection = this.group.circle(reducedDiameter * r)
+                const connection = this.group.circle(diameter * r)
                 connection.x(p.x)
                 connection.y(p.x)
             }

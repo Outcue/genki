@@ -34,15 +34,14 @@ class FontMetrics {
     }
 
     boundingRect(value: string): Rect {
-        return new Rect(0, 0, 100, 100)
+        return new Rect(0, 0, 100, 20)
     }
 }
 
 export class NodeGeometry {
 
-    private _width = 100
-    private _height = 150
-    //private _entryWidth = 20
+    private _width = 0
+    private _height = 0
     private _entryHeight = 80
     private _inputPortWidth = 70
     private _outputPortWidth = 70
@@ -90,7 +89,10 @@ export class NodeGeometry {
         this._height = step * maxNumOfEntries
 
         this._height += this.captionHeight()
-        this._width = this._inputPortWidth + this._outputPortWidth + 2 * this._spacing
+        this._width = this._inputPortWidth
+            + this._outputPortWidth
+            + 2
+            * this._spacing
 
         this._width = Math.max(this._width, this.captionWidth())
         this._width = Math.max(NodeMinWidth, this._width)
@@ -104,6 +106,8 @@ export class NodeGeometry {
                 this._height += this.validationHeight() + this._spacing
             }
         }
+
+        console.log(this._width)
     }
 
     toggle() {
@@ -134,15 +138,16 @@ export class NodeGeometry {
     }
 
     portScenePosition(index: PortIndex, portType: PortType): Point {
+
         const nodeStyle = StyleCollection.nodeStyle
         const step = this._entryHeight + this._spacing
 
-        var totalHeight = 0.0;
+        var totalHeight = 0.0
         totalHeight += this.captionHeight()
         totalHeight += step * index
 
         // TODO: why?
-        totalHeight += step / 2.0;
+        totalHeight += step / 2.0
 
         var result: Point = new Point(0, 0)
 
