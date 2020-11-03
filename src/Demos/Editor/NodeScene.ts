@@ -60,11 +60,10 @@ export class NodeScene {
         this._connections.delete(connection.id)
     }
 
-    addNode(node: NodeDataModel): NodeDataModel {
+    addNode(node: NodeDataModel) {
         this._nodes.set(node.id(), node)
         node.initialize(this)
         this.nodeCreated(node)
-        return node
     }
 
     connectionCreated(connection: Connection) {

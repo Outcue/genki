@@ -31,13 +31,19 @@ export class NodeState {
     private _outConnections: Array<ConnectionSet>
     private _reaction = NodeConnectionReaction.NotReacting
     private _reactingPortType = PortType.None
-    private _reactingDataType: NodeDataType
+    private _reactingDataType?: NodeDataType
     private _resizing = false
 
-    constructor(private model: NodeDataModel) {
+    constructor(model: NodeDataModel) {
+        this._inConnections = new Array<ConnectionSet>()
+        for (var input = 0; input < model.nPorts(PortType.In); ++input) {
+            this._inConnections.push(new Map<string, Connection>())
+        }
 
-        this._inConnections = new Array<ConnectionSet>(model.nPorts(PortType.In))
-        this._outConnections = new Array<ConnectionSet>(model.nPorts(PortType.Out))
+        this._outConnections = new Array<ConnectionSet>()
+        for (var output = 0; output < model.nPorts(PortType.Out); ++output) {
+            this._outConnections.push(new Map<string, Connection>())
+        }
     }
 
     connections(portType: PortType, portIndex: PortIndex) {
@@ -77,7 +83,11 @@ export class NodeState {
     }
 
     reactingDataType(): NodeDataType {
-        return this._reactingDataType
+        if (this._reactingDataType) {
+            return this._reactingDataType
+        } else {
+            return DefaultDataType
+        }
     }
 
     setReaction(

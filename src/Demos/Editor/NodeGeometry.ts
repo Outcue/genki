@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//import { Point } from '@svgdotjs/svg.js'
+import { Point } from '@svgdotjs/svg.js'
 
 import { NodeDataModel, NodeValidationState } from './NodeData'
-import { PortType } from './PortType'
+import { PortIndex, PortType } from './PortType'
 import { Rect } from './NodeTypes'
 import { StyleCollection } from './StyleCollection'
 
@@ -51,7 +51,7 @@ export class NodeGeometry {
     //private _hovered = false
     private _expanded = true
 
-    //private _draggingPos = new Point(-1000, -1000)
+    private _draggingPos = new Point(-1000, -1000)
 
     private _nSources: number
     private _nSinks: number
@@ -62,6 +62,10 @@ export class NodeGeometry {
     constructor(private _dataModel: NodeDataModel) {
         this._nSources = this._dataModel.nPorts(PortType.Out)
         this._nSinks = this._dataModel.nPorts(PortType.In)
+    }
+
+    get draggingPos(): Point {
+        return this._draggingPos
     }
 
     boundingRect(): Rect {
@@ -129,6 +133,44 @@ export class NodeGeometry {
         this.toggle()
     }
 
+    portScenePosition(index: PortIndex, portType: PortType): Point {
+        const nodeStyle = StyleCollection.nodeStyle
+        const step = this._entryHeight + this._spacing
+
+        var totalHeight = 0.0;
+        totalHeight += this.captionHeight()
+        totalHeight += step * index
+
+        // TODO: why?
+        totalHeight += step / 2.0;
+
+        var result: Point = new Point(0, 0)
+
+        switch (portType) {
+
+            case PortType.In:
+                {
+                    const x = 0.0 - nodeStyle.ConnectionPointDiameter
+                    result = new Point(x, totalHeight)
+                    break
+                }
+
+            case PortType.Out:
+                {
+                    const x = this._width + nodeStyle.ConnectionPointDiameter
+                    result = new Point(x, totalHeight)
+                    console.log(x, this._width)
+                    break
+                }
+
+            default:
+                break
+        }
+
+        //return t.map(result)
+        return result
+    }
+
     private captionHeight(): number {
         if (!this._dataModel.captionVisible()) {
             return 0
@@ -147,7 +189,6 @@ export class NodeGeometry {
         const bounds = this._boldFontMetrics.boundingRect(name)
         return bounds.width
     }
-
 
     private portWidth(portType: PortType): number {
 

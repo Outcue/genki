@@ -25,9 +25,9 @@ window.onresize = () => {
 window.onload = () => {
     registry = NodeRegistry.registerDataModels()
     scene = new NodeScene(registry)
-    const type = registry.create('ValueNode')
-    if (type) {
-        const node = scene.addNode(type)
+    const node = registry.create('ValueNode')
+    if (node) {
+        scene.addNode(node)
     }
 }
 

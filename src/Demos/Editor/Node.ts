@@ -24,15 +24,12 @@ import { PortIndex, PortType } from './PortType'
 
 export class Node extends BaseNode {
 
-    readonly nodeState: NodeState
-    private _nodeGeometry: NodeGeometry
+    private _nodeState?: NodeState
+    private _nodeGeometry?: NodeGeometry
     private _nodeGraphicsObject?: NodeGraphicsObject
 
     constructor() {
         super()
-        this.nodeState = new NodeState(this)
-        this._nodeGeometry = new NodeGeometry(this)
-        this._nodeGeometry.recalculateSize()
 
         //     // propagate data: model => node
         // connect(_nodeDataModel.get(),
@@ -52,6 +49,9 @@ export class Node extends BaseNode {
     }
 
     get nodeGeometry(): NodeGeometry {
+        if (!this._nodeGeometry) {
+            throw new Error()
+        }
         return this._nodeGeometry
     }
 
@@ -59,7 +59,17 @@ export class Node extends BaseNode {
         return this._nodeGraphicsObject
     }
 
+    get nodeState(): NodeState {
+        if (!this._nodeState) {
+            throw new Error()
+        }
+        return this._nodeState
+    }
+
     initialize(scene: NodeScene): void {
+        this._nodeState = new NodeState(this)
+        this._nodeGeometry = new NodeGeometry(this)
+        this._nodeGeometry.recalculateSize()
         this._nodeGraphicsObject = new NodeGraphicsObject(this, scene)
         this._nodeGraphicsObject.collapse()
     }

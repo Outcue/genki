@@ -49,10 +49,17 @@ export class NodeStyle implements NodeStyleBase {
 }
 
 export class ConnectionStyle implements NodeStyleBase {
+
+    private _useDataDefinedColors = false
+
     loadJsonText(jsonText: string): void {
     }
 
     loadJsonFile(fileName: string): void {
+    }
+
+    get useDataDefinedColors(): boolean {
+        return this._useDataDefinedColors
     }
 
 }

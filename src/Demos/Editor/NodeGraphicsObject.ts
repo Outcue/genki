@@ -15,14 +15,14 @@
 import '@svgdotjs/svg.draggable.js'
 import "@svgdotjs/svg.filter.js"
 
-import { Filter, G, Rect as RectSVG } from '@svgdotjs/svg.js'
+import { Filter, G, Point, Rect as RectSVG } from '@svgdotjs/svg.js'
 
 import { Node } from './Node'
+import { ConnectionPolicy } from './NodeData'
 import { NodeScene } from './NodeScene'
 import { PortType } from './PortType'
 import { Rect } from './NodeTypes'
 import { StyleCollection } from './StyleCollection'
-
 
 const BlurRadius = 3.0
 const Check = 32
@@ -110,6 +110,10 @@ export class NodeGraphicsObject {
         )
     }
 
+    private static dotProduct(p1: Point, p2: Point) {
+        return p1.x * p2.x + p1.y * p2.y
+    }
+
     private addConnectionPoints() {
 
         const geom = this.node.nodeGeometry
@@ -127,74 +131,121 @@ export class NodeGraphicsObject {
             for (var i = 0; i < n; ++i) {
 
                 var p = geom.portScenePosition(i, portType)
-                const dataType = node.dataType(portType, i)
-            }
+                const dataType = this.node.dataType(portType, i)
 
-            /*
-            for (PortType portType: { PortType:: Out, PortType:: In }) {
-                size_t n = state.getEntries(portType).size();
-    
-                for (unsigned int i = 0; i < n; ++i)
-                {
-                    QPointF p = geom.portScenePosition(i, portType);
-    
-                    const auto& dataType = model -> dataType(portType, i);
-    
-                    bool canConnect = (state.getEntries(portType)[i].empty() ||
-                        (portType == PortType:: Out &&
-                            model -> portOutConnectionPolicy(i) == NodeDataModel:: ConnectionPolicy:: Many) );
-    
-                    double r = 1.0;
-                    if (state.isReacting() && canConnect && portType == state.reactingPortType()) {
-    
-                        auto   diff = geom.draggingPos() - p;
-                        double dist = std:: sqrt(QPointF:: dotProduct(diff, diff));
-                        bool   typeConvertable = false;
-    
-                        {
-                            if (portType == PortType:: In)
-                            {
-                                typeConvertable = scene.registry().getTypeConverter(state.reactingDataType(), dataType) != nullptr;
-                            }
-                        else {
-                                typeConvertable = scene.registry().getTypeConverter(dataType, state.reactingDataType()) != nullptr;
-                            }
-                        }
-    
-                        if (state.reactingDataType().id == dataType.id || typeConvertable) {
-                            const double thres = 40.0;
-                            r = (dist < thres) ?
-                                (2.0 - dist / thres) :
-                                1.0;
-                        }
-                        else {
-                            const double thres = 80.0;
-                            r = (dist < thres) ?
-                                (dist / thres) :
-                                1.0;
-                        }
-                    }
-    
-                    if (connectionStyle.useDataDefinedColors()) {
-                        painter -> setBrush(connectionStyle.normalColor(dataType.id));
+                const entries = state.getEntries(portType)
+
+                var canConnect = entries[i].size
+                    || (portType == PortType.Out
+                        && this.node.portOutConnectionPolicy(i) == ConnectionPolicy.Many)
+
+                var r = 1.0
+
+                if (state.isReacting()
+                    && canConnect
+                    && portType == state.reactingPortType()) {
+
+                    var diff = new Point(
+                        geom.draggingPos.x - p.x,
+                        geom.draggingPos.y - p.y)
+
+                    var dist = Math.sqrt(NodeGraphicsObject.dotProduct(diff, diff))
+                    var typeConvertable = false
+
+                    // {
+                    //     if (portType == PortType.In) {
+                    //         typeConvertable = scene.registry().getTypeConverter(state.reactingDataType(), dataType) != nullptr;
+                    //     } else {
+                    //         typeConvertable = scene.registry().getTypeConverter(dataType, state.reactingDataType()) != nullptr;
+                    //     }
+                    // }
+
+                    if (state.reactingDataType().id == dataType.id || typeConvertable) {
+                        const thres = 40.0;
+                        r = (dist < thres) ? (2.0 - dist / thres) : 1.0
                     } else {
-                        painter -> setBrush(nodeStyle.ConnectionPointColor);
+                        const thres = 80.0;
+                        r = (dist < thres) ? (dist / thres) : 1.0
                     }
-    
-                    painter -> drawEllipse(p,
-                        reducedDiameter * r,
-                        reducedDiameter * r);
                 }
+
+                if (connectionStyle.useDataDefinedColors) {
+                    //painter -> setBrush(connectionStyle.normalColor(dataType.id));
+                } else {
+                    //painter -> setBrush(nodeStyle.ConnectionPointColor);
+                }
+
+                const connection = this.group.circle(reducedDiameter * r)
+                connection.x(p.x)
+                connection.y(p.x)
             }
-            */
         }
 
-        update() {
-            const geom = this.node.nodeGeometry
-            const bounds = geom.boundingRect()
-            this.shape.x(bounds.x)
-            this.shape.y(bounds.y)
-            this.shape.width(bounds.width)
-            this.shape.height(bounds.height)
+        /*
+        for (PortType portType: { PortType:: Out, PortType:: In }) {
+            size_t n = state.getEntries(portType).size();
+     
+            for (unsigned int i = 0; i < n; ++i)
+            {
+                QPointF p = geom.portScenePosition(i, portType);
+     
+                const auto& dataType = model -> dataType(portType, i);
+     
+                bool canConnect = (state.getEntries(portType)[i].empty() ||
+                    (portType == PortType:: Out &&
+                        model -> portOutConnectionPolicy(i) == NodeDataModel:: ConnectionPolicy:: Many) );
+     
+                double r = 1.0;
+                if (state.isReacting() && canConnect && portType == state.reactingPortType()) {
+     
+                    auto   diff = geom.draggingPos() - p;
+                    double dist = std:: sqrt(QPointF:: dotProduct(diff, diff));
+                    bool   typeConvertable = false;
+     
+                    {
+                        if (portType == PortType:: In)
+                        {
+                            typeConvertable = scene.registry().getTypeConverter(state.reactingDataType(), dataType) != nullptr;
+                        }
+                    else {
+                            typeConvertable = scene.registry().getTypeConverter(dataType, state.reactingDataType()) != nullptr;
+                        }
+                    }
+     
+                    if (state.reactingDataType().id == dataType.id || typeConvertable) {
+                        const double thres = 40.0;
+                        r = (dist < thres) ?
+                            (2.0 - dist / thres) :
+                            1.0;
+                    }
+                    else {
+                        const double thres = 80.0;
+                        r = (dist < thres) ?
+                            (dist / thres) :
+                            1.0;
+                    }
+                }
+     
+                if (connectionStyle.useDataDefinedColors()) {
+                    painter -> setBrush(connectionStyle.normalColor(dataType.id));
+                } else {
+                    painter -> setBrush(nodeStyle.ConnectionPointColor);
+                }
+     
+                painter -> drawEllipse(p,
+                    reducedDiameter * r,
+                    reducedDiameter * r);
+            }
         }
+        */
     }
+
+    update() {
+        const geom = this.node.nodeGeometry
+        const bounds = geom.boundingRect()
+        this.shape.x(bounds.x)
+        this.shape.y(bounds.y)
+        this.shape.width(bounds.width)
+        this.shape.height(bounds.height)
+    }
+}
